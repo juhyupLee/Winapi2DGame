@@ -1,0 +1,131 @@
+NOALLOC 	[0000018E973FE070]
+NOALLOC 	[0000018E94A4F7E0]
+NOALLOC 	[0000018E94A69520]
+NOALLOC 	[0000018E94A83260]
+NOALLOC 	[0000018E94A9CFA0]
+NOALLOC 	[0000018E94AB6CE0]
+NOALLOC 	[0000018E94AD0A20]
+NOALLOC 	[0000018E975300B0]
+NOALLOC 	[0000018E97549DF0]
+NOALLOC 	[0000018E97563B30]
+NOALLOC 	[0000018E9757D870]
+NOALLOC 	[0000018E975975B0]
+NOALLOC 	[0000018E975B12F0]
+NOALLOC 	[0000018E975CB030]
+NOALLOC 	[0000018E975E4D70]
+NOALLOC 	[0000018E975FEAB0]
+NOALLOC 	[0000018E976187F0]
+NOALLOC 	[0000018E9763CF50]
+NOALLOC 	[0000018E97656C90]
+NOALLOC 	[0000018E976709D0]
+NOALLOC 	[0000018E9768B750]
+NOALLOC 	[0000018E976A5490]
+NOALLOC 	[0000018E976BF1D0]
+NOALLOC 	[0000018E976D8F10]
+NOALLOC 	[0000018E976F2C50]
+NOALLOC 	[0000018E9770C990]
+NOALLOC 	[0000018E977266D0]
+NOALLOC 	[0000018E97740410]
+NOALLOC 	[0000018E9775A150]
+NOALLOC 	[0000018E97773E90]
+NOALLOC 	[0000018E9778DBD0]
+NOALLOC 	[0000018E977A7910]
+NOALLOC 	[0000018E977C1650]
+NOALLOC 	[0000018E977DB390]
+NOALLOC 	[0000018E977F50D0]
+NOALLOC 	[0000018E9780EE10]
+NOALLOC 	[0000018E978300B0]
+NOALLOC 	[0000018E97849DF0]
+NOALLOC 	[0000018E97863B30]
+NOALLOC 	[0000018E9787D870]
+NOALLOC 	[0000018E978975B0]
+NOALLOC 	[0000018E978B12F0]
+NOALLOC 	[0000018E978CB030]
+NOALLOC 	[0000018E978E4D70]
+NOALLOC 	[0000018E978FEAB0]
+NOALLOC 	[0000018E979187F0]
+NOALLOC 	[0000018E97932530]
+NOALLOC 	[0000018E9794C270]
+NOALLOC 	[0000018E97965FB0]
+NOALLOC 	[0000018E9797FCF0]
+NOALLOC 	[0000018E97999A30]
+NOALLOC 	[0000018E979B3770]
+NOALLOC 	[0000018E979CD4B0]
+NOALLOC 	[0000018E979E71F0]
+NOALLOC 	[0000018E97A00F30]
+NOALLOC 	[0000018E97A1AC70]
+NOALLOC 	[0000018E97A349B0]
+NOALLOC 	[0000018E97A4E6F0]
+NOALLOC 	[0000018E97A68430]
+NOALLOC 	[0000018E94A36560]
+NOALLOC 	[0000018E94A3F640]
+NOALLOC 	[0000018E94A3D320]
+NOALLOC 	[0000018E94A3F230]
+NOALLOC 	[0000018E94A3D4A0]
+NOALLOC 	[0000018E94A427F0]
+NOALLOC 	[0000018E94A3D260]
+NOALLOC 	[0000018E94A3CD20]
+NOALLOC 	[0000018E94A3C720]
+NOALLOC 	[0000018E94A3D140]
+NOALLOC 	[0000018E94A3F9B0]
+NOALLOC 	[0000018E9716A070]
+NOALLOC 	[0000018E94A077A0]
+NOALLOC 	[0000018E94A07440]
+LEAK 	[0000018E94A3CDE0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 25
+LEAK 	[0000018E94A3D380] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 26
+LEAK 	[0000018E94A3D3E0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 27
+LEAK 	[0000018E94A3CC00] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 28
+LEAK 	[0000018E94A3C840] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 30
+LEAK 	[0000018E94A3D500] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 31
+LEAK 	[0000018E94A3D440] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 32
+LEAK 	[0000018E94A3CC60] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 33
+LEAK 	[0000018E94A3C960] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 35
+LEAK 	[0000018E94A3D5C0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 36
+LEAK 	[0000018E94A3D560] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 37
+LEAK 	[0000018E94A3CBA0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 38
+LEAK 	[0000018E94A3C780] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 40
+LEAK 	[0000018E94A3C7E0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 41
+LEAK 	[0000018E94A3C900] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 42
+LEAK 	[0000018E94A3C9C0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 43
+LEAK 	[0000018E94A3CA80] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 47
+LEAK 	[0000018E94A3CCC0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 48
+LEAK 	[0000018E94A3CEA0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 49
+LEAK 	[0000018E94A42250] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 50
+LEAK 	[0000018E94A41FB0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 51
+LEAK 	[0000018E94A41CB0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 52
+LEAK 	[0000018E94A41B30] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 54
+LEAK 	[0000018E94A425B0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 55
+LEAK 	[0000018E94A41D10] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 56
+LEAK 	[0000018E94A41D70] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 57
+LEAK 	[0000018E94A41B90] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 58
+LEAK 	[0000018E94A41DD0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 59
+LEAK 	[0000018E94A41A70] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 62
+LEAK 	[0000018E94A42010] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 63
+LEAK 	[0000018E94A42370] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 64
+LEAK 	[0000018E94A42670] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 66
+LEAK 	[0000018E94A42130] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 67
+LEAK 	[0000018E94A41AD0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 68
+LEAK 	[0000018E94A422B0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 70
+LEAK 	[0000018E94A42070] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 71
+LEAK 	[0000018E94A42310] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 72
+LEAK 	[0000018E94A41950] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 73
+LEAK 	[0000018E94A423D0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 74
+LEAK 	[0000018E94A426D0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 75
+LEAK 	[0000018E94A42490] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 76
+LEAK 	[0000018E94A424F0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 77
+LEAK 	[0000018E94A42430] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 78
+LEAK 	[0000018E94A419B0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 79
+LEAK 	[0000018E94A41BF0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 80
+LEAK 	[0000018E94A41E30] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 81
+LEAK 	[0000018E94A42190] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 84
+LEAK 	[0000018E94A41C50] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 85
+LEAK 	[0000018E94A420D0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 86
+LEAK 	[0000018E94A41F50] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 87
+LEAK 	[0000018E94A42550] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 88
+LEAK 	[0000018E94A421F0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 89
+LEAK 	[0000018E94A42610] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 90
+LEAK 	[0000018E94A41A10] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 91
+LEAK 	[0000018E94A41E90] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 92
+LEAK 	[0000018E94A42730] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 93
+LEAK 	[0000018E94A41EF0] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 94
+LEAK 	[0000018E94A42790] [24] C:\SideProject\Procademy\Winapi2DGame\Winapi2DGame\Winapi2DGame\Player.cpp : 95
