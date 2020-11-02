@@ -60,6 +60,7 @@ private:
 	__int32		m_iMoveDirection;
 	__int32		m_iSpeed;
 	__int32		m_iHP;
+	int m_Temp;
 
 
 };
