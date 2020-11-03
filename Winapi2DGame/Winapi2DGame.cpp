@@ -4,6 +4,10 @@
 >개발중...
 **/
 #pragma comment(lib,"imm32.lib")
+#pragma comment(lib,"ws2_32.lib")
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include <WinSock2.h>
+#include <WS2tcpip.h>
 #include "framework.h"
 #include "Winapi2DGame.h"
 #include "windowsx.h"
@@ -33,6 +37,9 @@
 #include "LogManager.h"
 #include "Profiler.h"
 #include "MemoryTracer.h"
+#include <iostream>
+#include "RingBuffer.h"
+
 
 #define MAX_LOADSTRING 100
 
@@ -46,18 +53,25 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 // 전역 변수:
 BOOL Init_Window(HINSTANCE hInstance);
 void Init_Game();
+void Init_Network();
+void SelectProcess(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+void RecvEvent();
+void SendEvent();
 
 HWND g_hWnd = 0;
 RECT g_WindowRect;
 BOOL g_bActiveWindow;
 
 WCHAR g_FPSBuf[100];
-
 HIMC g_hOldIMC;
 
 int g_iLogicCount = 0 ;
 int g_iRenderCount=0;
+RingBuffer g_RecvRingBuffer;
+RingBuffer g_SendRingBuffer;
 
+SOCKET g_Socket;
+bool g_bConnected = false;
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -68,7 +82,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return 0;
     }
     Init_Game();
-    
+    Init_Network();
     MSG msg;
     int fpsCount = 0;
     long long fpsTime = GetTickCount64();
@@ -105,7 +119,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 break;
             }
             ++fpsCount;
-            ProfileEnd(L"GameLogicLoop");
         }
     }
     return (int) msg.wParam;
@@ -187,6 +200,105 @@ void Init_Game()
 {
     SINGLETON(CSceneManager)->ChangeScene(CSceneManager::GAME_SCENE);
 }
+void Init_Network()
+{
+    WSAData wsaData;
+    SOCKADDR_IN serverAddr;
+    if (0 != WSAStartup(MAKEWORD(2, 2), &wsaData))
+    {
+        SINGLETON(CLogManager)->PrintConsoleLog(L"WSAStartUp Error:%d\n", WSAGetLastError());
+    }
+
+    g_Socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (g_Socket == INVALID_SOCKET)
+    {
+        SINGLETON(CLogManager)->PrintConsoleLog(L"socket() Error:%d\n", WSAGetLastError());
+    }
+
+    memset(&serverAddr, 0, sizeof(SOCKADDR_IN));
+
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(SERVER_PORT);
+    InetPton(AF_INET, SERVER_IP, &serverAddr.sin_addr.S_un.S_addr);
+
+
+    if (0 != WSAAsyncSelect(g_Socket, g_hWnd, WM_NETWORK, FD_CONNECT | FD_CLOSE | FD_READ | FD_WRITE))
+    {
+        SINGLETON(CLogManager)->PrintConsoleLog(L"WSAAsncSelect Error:%d\n", WSAGetLastError());
+    }
+    if (0 != connect(g_Socket, (sockaddr*)&serverAddr, sizeof(SOCKADDR_IN)))
+    {
+        SINGLETON(CLogManager)->PrintConsoleLog(L"connect() Error:%d\n", WSAGetLastError());
+    }
+
+}
+void SelectProcess(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if (WSAGETSELECTERROR(lParam))
+    {
+        SINGLETON(CLogManager)->PrintConsoleLog(L"SelectProcess() error%d", WSAGETSELECTERROR(lParam));
+    }
+    switch (WSAGETSELECTEVENT(lParam))
+    {
+    case FD_CONNECT:
+        SINGLETON(CLogManager)->PrintConsoleLog(L"Connect Success!!\n",0);
+        g_bConnected = true;
+        break;
+    case FD_READ:
+        RecvEvent();
+        break;
+    case FD_WRITE:
+        SendEvent();
+        break;
+    case FD_CLOSE:
+        MessageBox(hWnd, L"You Died........ ", MB_OK, 0);
+        PostQuitMessage(0);
+        break;
+    }
+}
+void RecvEvent()
+{
+    int directEnQSize = g_RecvRingBuffer.GetDirectEnqueueSize();
+    int recvRtn = recv(g_Socket, g_RecvRingBuffer.GetRearBufferPtr(), directEnQSize, 0);
+#ifdef _DEBUG
+    SINGLETON(CLogManager)->PrintConsoleLog(L"RecvEvent RecvReturn:%d\n", recvRtn);
+#endif
+    if (recvRtn <= 0)
+    {
+#ifdef _DEBUG
+        SINGLETON(CLogManager)->PrintConsoleLog(L"Recv Error:%d\n", recvRtn);
+#endif
+        if (WSAGetLastError() != WSAEWOULDBLOCK)
+        {
+            MessageBox(g_hWnd, L"Close or Recv error", MB_OK, 0);
+            return;
+        }
+    }
+    g_RecvRingBuffer.MoveRear(recvRtn);
+
+}
+void SendEvent()
+{
+    char tempBuffer[10000];
+
+    while (g_SendRingBuffer.GetUsedSize() != 0)
+    {
+        int directDeQSize = g_SendRingBuffer.GetDirectDequeueSize();
+
+        int peekRtn = g_SendRingBuffer.Peek(tempBuffer, directDeQSize);
+        int sendRtn = send(g_Socket, tempBuffer, peekRtn, 0);
+        if (sendRtn<=0)
+        {
+#ifdef _DEBUG
+            SINGLETON(CLogManager)->PrintConsoleLog(L"Send Error:%d\n", WSAGetLastError());
+#endif
+            return;
+        }
+        g_SendRingBuffer.MoveFront(sendRtn);
+    }
+    
+
+}
 //
 //  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
@@ -204,16 +316,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_ACTIVATEAPP:
         g_bActiveWindow = (BOOL)wParam;
         break;
-       
-    case WM_LBUTTONDOWN:
-    {
-        WCHAR buf[1024];
-        int x = GET_X_LPARAM(lParam);
-        int y = GET_Y_LPARAM(lParam);
-        wsprintf(buf, L"X:%d Y:%d", x, y);
-        MessageBox(hWnd, buf, MB_OK, MB_OK);
-        break;
-    }
+      
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -224,6 +327,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
             //TextOut(hdc, 10, 20, g_FPSBuf, (int)wcslen(g_FPSBuf));
         }
+        break;
+
+    case WM_NETWORK:
+        SelectProcess(hWnd, message, wParam, lParam);
         break;
     case WM_DESTROY:
         PostQuitMessage(0);

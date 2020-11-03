@@ -368,7 +368,7 @@ void CList<T>::QuickSort(T* arr, int left, int right, bool (*ptr)(T object1, T o
 			//--------------------
 			//함수포인터 들어가야되는 지점
 			//--------------------
-			if (ptr(arr[pivot], arr[leftIndex]))
+			if (ptr(arr[pivot], arr[rightIndex]))
 			{
 				break;
 			}

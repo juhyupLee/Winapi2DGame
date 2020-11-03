@@ -113,6 +113,21 @@
     <ClInclude Include="Monster.h">
       <Filter>소스 파일\Object</Filter>
     </ClInclude>
+    <ClInclude Include="PacketDefine.h">
+      <Filter>소스 파일\GlobalVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="RingBuffer.h">
+      <Filter>소스 파일\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketStructure.h">
+      <Filter>소스 파일\GlobalVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="CreatePacket.h">
+      <Filter>소스 파일\GlobalVariable</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Winapi2DGame.rc">
@@ -183,6 +198,15 @@
       <Filter>소스 파일\Library</Filter>
     </ClCompile>
     <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="RingBuffer.cpp">
+      <Filter>소스 파일\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="CreatePacket.cpp">
+      <Filter>소스 파일\GlobalVariable</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
   </ItemGroup>

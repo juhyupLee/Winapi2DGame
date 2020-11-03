@@ -9,8 +9,10 @@ public:
 		WALL,
 		BACKGROUND,
 		HP_BAR,
-		SHADOW
+		SHADOW,
+		EFFECT
 	};
+	IBaseObject(IBaseScene* pScene,int x, int y);
 	IBaseObject(IBaseScene* pScene);
 	virtual	~IBaseObject();
 	virtual	void Render() = 0;
@@ -29,7 +31,7 @@ public:
 	bool IsEndFrame();
 	void NextFrame();
 	__int32 GetY();
-
+	__int32 GetX();
 	//------------------------------------
 protected:
 	__int32		m_iX;

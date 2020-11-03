@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +147,8 @@
     <ClInclude Include="BackGround.h" />
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="BaseScene.h" />
+    <ClInclude Include="CreatePacket.h" />
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="GlobalVariable.h" />
@@ -154,9 +157,15 @@
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MyLinkedList.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="PacketDefine.h" />
+    <ClInclude Include="PacketStructure.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Profiler.h" />
+    <ClInclude Include="Profiler.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="RingBuffer.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScreenDib.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -179,13 +188,19 @@
     <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="BaseScene.cpp" />
+    <ClCompile Include="CreatePacket.cpp" />
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="LogManager.cpp" />
     <ClCompile Include="MemoryTracer.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Profiler.cpp" />
+    <ClCompile Include="Profiler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="RingBuffer.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScreenDib.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

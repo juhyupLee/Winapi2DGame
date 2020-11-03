@@ -6,7 +6,7 @@
 #include "Monster.h"
 #include "Player.h"
 #include "GlobalVariable.h"
-
+#include "PacketDefine.h"
 #include "MemoryTracer.h"
 
 #include "BackBuffer.h"

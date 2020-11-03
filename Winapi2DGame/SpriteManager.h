@@ -8,7 +8,7 @@ private:
 	{
 		OBJECT_MAX=10,
 		DIRECTION_MAX = 2,
-		STATUS_MAX = 10,
+		STATUS_MAX = 8,
 		FRAME_MAX =12
 	};
 	

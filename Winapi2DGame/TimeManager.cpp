@@ -14,7 +14,7 @@
 
 CTimeManager::CTimeManager()
 	:
-	m_FrameCount(50),
+	m_FrameCount(49),
 	m_LogicTimeEnd{ 0, },
 	m_LogicTimeStart{0,},
 	m_PrevLogicTime(0),

@@ -15,12 +15,11 @@ CSpriteManager::~CSpriteManager()
 	{
 		for (size_t index2 = 0; index2 < DIRECTION_MAX; index2++)
 		{
-
 			for (size_t index3 = 0; index3 < STATUS_MAX; index3++)
 			{
 				for (size_t index4 = 0; index4 < FRAME_MAX; index4++)
 				{
-					delete[] m_stSprite[index1][DIRECTION_MAX][STATUS_MAX][FRAME_MAX].m_bypImage;;
+					delete[] m_stSprite[index1][index2][index3][index4].m_bypImage;;
 
 				}
 			}
@@ -59,8 +58,6 @@ bool CSpriteManager::LoadingSprite(__int32 iObjectType, __int32 iDirection, __in
 		fclose(filePtr);
 		return false;
 	}
-
-
 	if (0 == fread(&bitmapInfoHeder, 1, sizeof(BITMAPINFOHEADER), filePtr))
 	{
 		MessageBox(nullptr, L"fread ¿À·ù", MB_OK, MB_OK);

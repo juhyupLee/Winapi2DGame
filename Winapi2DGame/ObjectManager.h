@@ -15,7 +15,12 @@ private:
 public:
 	static CObjectManager* GetInstance();
 
+	
+
 public:
+	void OtherPlayerActionInput(int scene, int id, int state, BYTE direction, int x, int y, bool inputStatus);
+	void AttackCheck(int scene, int attackID, int damageID, int damageHP);
+	void DeletePlayer(int scene, int id);
 	void Update(int scene);
 	void Render(int scene);
 	void AddObject(__int32 sceneNum, IBaseObject* object);

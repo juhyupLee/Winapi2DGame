@@ -6,6 +6,17 @@
 #include "ObjectManager.h"
 #include "MemoryTracer.h"
 
+#include <iostream>
+#include <Windows.h>
+#include "BaseScene.h"
+#include "BaseObject.h"
+#include "SpriteManager.h"
+#include "Player.h"
+
+#include <iostream>
+#include <Windows.h>
+#include "LogManager.h"
+
 bool temp(IBaseObject* temp1, IBaseObject* temp2)
 {
     return temp1->GetY() > temp2->GetY();
@@ -27,6 +38,81 @@ CObjectManager* CObjectManager::GetInstance()
 {
     static CObjectManager objectManager;
     return &objectManager;
+}
+
+void CObjectManager::OtherPlayerActionInput(int scene, int id,int state, BYTE direction, int x, int y,bool inputStatus)
+{
+    auto iter = m_ObjectList[scene].begin();
+
+    for (; iter != m_ObjectList[scene].end();++iter)
+    {
+        if ((*iter)->GetType() == IBaseObject::PLAYER)
+        {
+            if (((CPlayer*)(*iter))->GetID() == id)
+            {
+                ((CPlayer*)(*iter))->ActionInput(state, direction, direction);
+                ((CPlayer*)(*iter))->SetXY(x, y);
+                ((CPlayer*)(*iter))->SetInputStatus(inputStatus);                
+                break;
+            }
+        }
+
+    }
+}
+
+void CObjectManager::AttackCheck(int scene, int attackID, int damageID, int damageHP)
+{
+    auto iter = m_ObjectList[scene].begin();
+    int damagePlayexX = 0;
+    int damagePlayexY = 0;
+
+    for (; iter != m_ObjectList[scene].end(); ++iter)
+    {
+        if ((*iter)->GetType() == IBaseObject::PLAYER)
+        {
+            if (((CPlayer*)(*iter))->GetID() == damageID)
+            {
+                ((CPlayer*)(*iter))->SetHP(damageHP);
+                damagePlayexX = ((CPlayer*)(*iter))->GetX();
+                damagePlayexY = ((CPlayer*)(*iter))->GetY();
+            }
+        }
+
+    }
+
+    iter = m_ObjectList[scene].begin();
+
+    for (; iter != m_ObjectList[scene].end(); ++iter)
+    {
+        if ((*iter)->GetType() == IBaseObject::PLAYER)
+        {
+            if (((CPlayer*)(*iter))->GetID() == attackID)
+            {
+                ((CPlayer*)(*iter))->SetAttackFlag(true);
+                ((CPlayer*)(*iter))->SetDamagePlayedXY(damagePlayexX, damagePlayexY);
+            }
+        }
+
+    }
+  
+}
+
+void CObjectManager::DeletePlayer(int scene, int id)
+{
+    auto iter = m_ObjectList[scene].begin();
+
+
+    for (; iter != m_ObjectList[scene].end(); ++iter)
+    {
+        if ((*iter)->GetType() == IBaseObject::PLAYER)
+        {
+            if (((CPlayer*)(*iter))->GetID() == id)
+            {
+                ((CPlayer*)(*iter))->SetDelete(true);
+            }
+        }
+
+    }
 }
 
 void CObjectManager::Update(int scene)

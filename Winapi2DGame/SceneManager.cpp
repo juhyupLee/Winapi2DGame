@@ -52,6 +52,7 @@ bool CSceneManager::Run()
     //---------------------------
     // 본 로직 시작 
     //---------------------------
+   
     m_currentScene->KeyProcess();
     m_currentScene->Update();
 
@@ -85,7 +86,7 @@ bool CSceneManager::Run()
     // 로그
     //---------------------------
     //SINGLETON(CLogManager)->PrintConsoleLog(L"Skip:%d // NonSkip:%d\n", m_SkipCount, m_NonSkipCount);
-    SINGLETON(CLogManager)->PrintConsoleLog(L"logicTime:%d\n", SINGLETON(CTimeManager)->GetLogicTime());
+    //SINGLETON(CLogManager)->PrintConsoleLog(L"logicTime:%d\n", SINGLETON(CTimeManager)->GetLogicTime());
     //SINGLETON(CLogManager)->PrintConsoleLog(L"OverTime:%d\n", SINGLETON(CTimeManager)->GetSpareTime());
     
     //system("cls");

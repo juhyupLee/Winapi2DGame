@@ -1,7 +1,12 @@
 #pragma once
+#include "RingBuffer.h"
+
 #define SINGLETON(TYPE) TYPE::GetInstance()
 #define WINSIZE_WIDTH 640
 #define WINSIZE_HEIGHT 480
+#define WM_NETWORK WM_USER+1
+#define SERVER_PORT 5000
+#define SERVER_IP L"127.0.0.1"
 
 extern HWND  g_hWnd;
 extern BOOL g_bActiveWindow;
@@ -10,7 +15,12 @@ extern CPlayer* g_pPlayer;
 extern int g_iLogicCount;
 extern int g_iRenderCount;
 
+extern SOCKET g_Socket;
+extern RingBuffer g_SendRingBuffer;
+extern RingBuffer g_RecvRingBuffer;
+extern bool g_bConnected;
 
+extern void SendEvent();
 //---------------------------------------
 //Procademy 
 //---------------------------------------

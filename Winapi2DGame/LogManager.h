@@ -18,7 +18,8 @@ public:
 	void PrintLog(const WCHAR* fileName, const WCHAR* str, double var1, double var2);
 	void PrintLog(const WCHAR* fileName, const WCHAR* str, bool var1, bool var2);
 
-
+	
+	void PrintConsoleLog(const WCHAR* str, __int32 var1, __int32 var2, __int32 var3, __int32 var4);
 	void PrintConsoleLog(const WCHAR* str, __int32 var1, __int32 var2);
 	void PrintConsoleLog(const WCHAR* str, __int32 var1);
 };

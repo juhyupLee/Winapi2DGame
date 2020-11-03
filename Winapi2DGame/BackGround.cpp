@@ -16,7 +16,7 @@ CBackGround::CBackGround(IBaseScene* pScene)
     IBaseObject(pScene),
     m_Sprite(nullptr)
 {
-     m_Sprite = new CSprite(L"_Map.bmp");
+     m_Sprite = new CSprite(L"./Sprite_Data/_Map.bmp");
 }
 
 CBackGround::~CBackGround()

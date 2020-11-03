@@ -3,11 +3,11 @@
 #include <Windows.h>
 #include "LogManager.h"
 #include "MemoryTracer.h"
-//#ifdef UNICODE
-//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
-//#else
-//#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
-//#endif
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
 
 CLogManager::CLogManager()
 {
@@ -151,4 +151,9 @@ void CLogManager::PrintConsoleLog(const WCHAR* str, __int32 var1, __int32 var2)
 void CLogManager::PrintConsoleLog(const WCHAR* str, __int32 var1)
 {
     wprintf(str, var1);
+}
+
+void CLogManager::PrintConsoleLog(const WCHAR* str, __int32 var1, __int32 var2, __int32 var3, __int32 var4)
+{
+    wprintf(str, var1,var2,var3,var4);
 }
