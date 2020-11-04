@@ -10,18 +10,15 @@
 #include "BackGround.h"
 #include "SpriteManager.h"
 
-
-CBackGround::CBackGround(IBaseScene* pScene)
+CBackGround::CBackGround()
     :
-    IBaseObject(pScene),
-    m_Sprite(nullptr)
+    IBaseObject()
+    
 {
-     m_Sprite = new CSprite(L"./Sprite_Data/_Map.bmp");
 }
 
 CBackGround::~CBackGround()
 {
-    delete m_Sprite;
 }
 
 void CBackGround::Render()
@@ -42,15 +39,3 @@ __int32 CBackGround::GetType()
 {
     return 0;
 }
-
-RECT CBackGround::GetHitBox()
-{
-    return RECT();
-}
-
-RECT CBackGround::GetCollisionBox()
-{
-    return RECT();
-}
-
-

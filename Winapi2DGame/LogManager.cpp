@@ -2,7 +2,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "LogManager.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #else
@@ -11,8 +11,8 @@
 
 CLogManager::CLogManager()
 {
-}
 
+}
 CLogManager::~CLogManager()
 {
 }

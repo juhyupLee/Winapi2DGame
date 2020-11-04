@@ -10,7 +10,7 @@ struct PacketHeader
 };
 struct Packet_SC_MY_Character
 {
-	int32_t id;
+	int32_t id;  
 	BYTE direction;
 	int16_t x;
 	int16_t y;
@@ -19,7 +19,8 @@ struct Packet_SC_MY_Character
 
 struct Packet_SC_Other_Character
 {
-	int32_t id;
+	
+	int32_t id; 
 	BYTE direction;
 	int16_t x;
 	int16_t y;
@@ -108,5 +109,6 @@ struct Packet_SC_Damage
 	int32_t damageID;
 	BYTE damageHP;
 };
+#pragma pack(pop)
 
 

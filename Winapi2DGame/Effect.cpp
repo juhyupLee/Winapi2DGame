@@ -11,9 +11,9 @@
 #include "SpriteManager.h"
 
 
-Effect::Effect(IBaseScene* pScene,int x ,int y)
+Effect::Effect(int x ,int y)
     :
-    IBaseObject(pScene,x,y),
+    IBaseObject(x,y),
     m_stCurrentSprite(nullptr)
 {
      //m_Sprite = new CSprite(L"./Sprite_Data/_Map.bmp");
@@ -50,16 +50,6 @@ bool Effect::Update()
 __int32 Effect::GetType()
 {
     return 0;
-}
-
-RECT Effect::GetHitBox()
-{
-    return RECT();
-}
-
-RECT Effect::GetCollisionBox()
-{
-    return RECT();
 }
 
 

@@ -12,15 +12,12 @@ public:
 		SHADOW,
 		EFFECT
 	};
-	IBaseObject(IBaseScene* pScene,int x, int y);
-	IBaseObject(IBaseScene* pScene);
+	IBaseObject(int x, int y);
+	IBaseObject();
 	virtual	~IBaseObject();
 	virtual	void Render() = 0;
 	virtual	bool Update() = 0;
-	virtual	RECT GetHitBox()=0;
-	virtual	RECT GetCollisionBox()=0;
 	virtual	__int32 GetType() = 0;
-	virtual void SetScene(IBaseScene* pScene);
 
 public:
 	//------------------------------------
@@ -36,7 +33,6 @@ public:
 protected:
 	__int32		m_iX;
 	__int32		m_iY;
-	IBaseScene* m_pCurrentScene;
 	__int32		m_iSpriteStart;
 	__int32		m_iSpriteMax;
 	__int32		m_iFrameDelay;

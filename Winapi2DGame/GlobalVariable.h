@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "RingBuffer.h"
 
 #define SINGLETON(TYPE) TYPE::GetInstance()
@@ -8,7 +9,9 @@
 #define SERVER_PORT 5000
 #define SERVER_IP L"127.0.0.1"
 
+extern HANDLE g_Handle;
 extern HWND  g_hWnd;
+
 extern BOOL g_bActiveWindow;
 extern CPlayer* g_pPlayer;
 
@@ -20,7 +23,6 @@ extern RingBuffer g_SendRingBuffer;
 extern RingBuffer g_RecvRingBuffer;
 extern bool g_bConnected;
 
-extern void SendEvent();
 //---------------------------------------
 //Procademy 
 //---------------------------------------

@@ -21,7 +21,7 @@
 #include <Windows.h>
 #include "LogManager.h"
 #include "PacketDefine.h"
-
+#include "GlobalFunction.h"
 
 CPlayer* g_pPlayer = nullptr;
 
@@ -36,22 +36,21 @@ CGameScene::~CGameScene()
 }
 void CGameScene::Update()
 {
-	Marshalling();
-	SINGLETON(CObjectManager)->Update(CObjectManager::GAME_SCENE);
+	SINGLETON(CObjectManager)->Update();
 	SendEvent();
 	++g_iLogicCount;
 }
 void CGameScene::Render()
 {
 	
-	SINGLETON(CObjectManager)->Render(CObjectManager::GAME_SCENE);
+	SINGLETON(CObjectManager)->Render();
 	++g_iRenderCount;
 	InvalidateRect(g_hWnd, nullptr, FALSE);
 }
 
 bool CGameScene::Loading()
 {
-	SINGLETON(CObjectManager)->AddObject(CObjectManager::GAME_SCENE, new CBackGround(this));
+	SINGLETON(CObjectManager)->AddObject(new CBackGround());
 	
 	SpriteLoading();
 	return true;
@@ -139,6 +138,12 @@ void CGameScene::KeyProcess()
 		bKeyProcess = true;
 	}
 	
+//--------------------------------------------------------------------
+// g_Player(본인클라)는 Keyprocess에서 키입력이 있다면 ActionInput으로 
+// Player에게 키입력을 전달하지만, 그렇지 않으면  InputSetting 플래그
+// 만  false로 세팅한다.
+// 플레이어 안에서 입력세팅이 안되어있다면 그에따른 로직처리(STAND 애니메이션)을 한다
+//--------------------------------------------------------------------
 	if (g_pPlayer != nullptr)
 	{
 		if (bKeyProcess == true)
@@ -151,166 +156,6 @@ void CGameScene::KeyProcess()
 			g_pPlayer->SetInputStatus(false);
 		}
 	}
-}
-
-void CGameScene::OtherActionInput()
-{
-
-}
-
-void CGameScene::Marshalling()
-{
-	char tempBuffer[150];
-	while (true)
-	{
-		if (g_RecvRingBuffer.GetUsedSize() < sizeof(PacketHeader))
-			break;
-		PacketHeader tempPacketHeader;
-
-		int peekRtn = g_RecvRingBuffer.Peek((char*)&tempPacketHeader, sizeof(PacketHeader));
-
-		if (tempPacketHeader.code != CODE)
-		{
-			SINGLETON(CLogManager)->PrintConsoleLog(L"Packet Code Error!!", 0);
-			break;
-		}
-		if (g_RecvRingBuffer.GetUsedSize() < sizeof(PacketHeader) + tempPacketHeader.size)
-			break;
-
-		g_RecvRingBuffer.MoveFront(sizeof(PacketHeader));
-
-		int deQRtn = g_RecvRingBuffer.Dequeue(tempBuffer, tempPacketHeader.size);
-
-		if (deQRtn != tempPacketHeader.size)
-		{
-			SINGLETON(CLogManager)->PrintConsoleLog(L"Dequeue Fail", 0);
-			break;
-		}
-
-		switch (tempPacketHeader.type)
-		{
-		case dfPACKET_SC_CREATE_MY_CHARACTER:
-			CreateMyCharacter(tempBuffer);
-			break;
-		case dfPACKET_SC_CREATE_OTHER_CHARACTER:
-			CreateOtherCharacter(tempBuffer);
-			break;
-		case dfPACKET_SC_DELETE_CHARACTER:
-			DeleteCharacter(tempBuffer);
-			break;
-		case dfPACKET_SC_MOVE_START:
-			MoveStart(tempBuffer);
-			break;
-		case dfPACKET_SC_MOVE_STOP:
-			MoveStop(tempBuffer);
-			break;
-		case dfPACKET_SC_ATTACK1:
-			Attack1(tempBuffer);
-			break;
-		case dfPACKET_SC_ATTACK2:
-			Attack2(tempBuffer);
-			break;
-		case dfPACKET_SC_ATTACK3:
-			Attack3(tempBuffer);
-			break;
-		case dfPACKET_SC_DAMAGE:
-			Damage(tempBuffer);
-			break;
-
-		}
-	}
-	
-}
-
-void CGameScene::CreateMyCharacter(char* payload)
-{
-	Packet_SC_MY_Character* packet = (Packet_SC_MY_Character*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] X:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] Y:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] HP:%d\n", packet->hp);
-
-	m_iMoveDirection = packet->direction;
-	g_pPlayer = new CPlayer(this, packet->id, packet->direction, packet->x, packet->y, packet->hp);
-
-	SINGLETON(CObjectManager)->AddObject(CObjectManager::GAME_SCENE, g_pPlayer);
-}
-
-void CGameScene::CreateOtherCharacter(char* payload)
-{
-	Packet_SC_Other_Character* packet = (Packet_SC_Other_Character*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] X:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] Y:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] HP:%d\n", packet->hp);
-
-	CPlayer* otherPlayer;
-
-	otherPlayer = new CPlayer(this, packet->id, packet->direction, packet->x, packet->y, packet->hp);
-
-	SINGLETON(CObjectManager)->AddObject(CObjectManager::GAME_SCENE, otherPlayer);
-}
-
-void CGameScene::MoveStart(char* payload)
-{
-	Packet_SC_Move_Start* packet = (Packet_SC_Move_Start*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] X:%d\n", packet->x);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] Y:%d\n", packet->y);
-
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(CObjectManager::GAME_SCENE, packet->id, CPlayer::MOVE, packet->direction, packet->x, packet->y,true);
-}
-
-void CGameScene::MoveStop(char* payload)
-{
-	Packet_SC_Move_Stop* packet = (Packet_SC_Move_Stop*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] X:%d\n", packet->x);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] Y:%d\n", packet->y);
-
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(CObjectManager::GAME_SCENE, packet->id,CPlayer::STAND, packet->direction, packet->x, packet->y,false);
-
-}
-
-void CGameScene::Attack1(char* payload)
-{
-	Packet_SC_Attack1* packet = (Packet_SC_Attack1*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack1(SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", packet->id,packet->direction, packet->x, packet->y);
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(CObjectManager::GAME_SCENE, packet->id, CPlayer::ATTACK1, packet->direction, packet->x, packet->y, true);
-}
-
-void CGameScene::Attack2(char* payload)
-{
-	Packet_SC_Attack2* packet = (Packet_SC_Attack2*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack2 (SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", packet->id, packet->direction, packet->x, packet->y);
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(CObjectManager::GAME_SCENE, packet->id, CPlayer::ATTACK2, packet->direction, packet->x, packet->y, true);
-}
-
-void CGameScene::Attack3(char* payload)
-{
-	Packet_SC_Attack3* packet = (Packet_SC_Attack3*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack3 (SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", packet->id, packet->direction, packet->x, packet->y);
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(CObjectManager::GAME_SCENE, packet->id, CPlayer::ATTACK3, packet->direction, packet->x, packet->y, true);
-}
-
-void CGameScene::Damage(char* payload)
-{
-
-	Packet_SC_Damage* packet = (Packet_SC_Damage*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Damage (SC)] Attack ID:%d // Damage ID:%d // Damage HP:%d\n", packet->attackID, packet->damageID, packet->damageHP,0);
-	SINGLETON(CObjectManager)->AttackCheck(CObjectManager::GAME_SCENE, packet->attackID, packet->damageID, packet->damageHP);
-}
-
-void CGameScene::DeleteCharacter(char* payload)
-{
-
-	Packet_SC_Delete_Character* packet = (Packet_SC_Delete_Character*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Delete (SC)]  ID:%d \n", packet->id);
-	SINGLETON(CObjectManager)->DeletePlayer(CObjectManager::GAME_SCENE, packet->id);
 }
 
 void CGameScene::SpriteLoading()
@@ -357,7 +202,7 @@ void CGameScene::SpriteLoading()
 	//----------------------------------------
 	//BackGround Sprite 
 	//----------------------------------------
-	SINGLETON(CSpriteManager)->LoadingSprite(IBaseObject::BACKGROUND, 0, 0, 0, L"_Map.bmp", 0, 0, collisionBox);
+	SINGLETON(CSpriteManager)->LoadingSprite(IBaseObject::BACKGROUND, 0, 0, 0, L"./Sprite_Data/_Map.bmp", 0, 0, collisionBox);
 
 	//----------------------------------------
 	//Player Sprite  : Attack1

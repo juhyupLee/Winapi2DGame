@@ -5,7 +5,7 @@
 #include "SpriteManager.h"
 #include "Player.h"
 #include "GlobalVariable.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 
 #include "BackBuffer.h"
 #include <cassert>
@@ -38,23 +38,20 @@
 #include "Sprite.h"
 #include "Effect.h"
 
-CPlayer::CPlayer(IBaseScene* pScene, int id, int direction, int x, int y, int hp)
+CPlayer::CPlayer(int id, int direction, int x, int y, int hp)
     :
-
     m_iStatus(1),
+    m_PrevStatus(1),
     m_iAni_CurrentFrame(0),
     m_bActionStand(false),
-    m_dwActionCur(0),
     m_stCurrentSprite(nullptr),
-    m_rectHitBox{ 0, },
-    m_rectCollisionBox{ 0, },
     m_bFirst(true),
     m_iMoveDirection(0),
     m_YSpeed(2),
     m_XSpeed(3),
     //------------------------------------------------------------------
     //서버로부터 받은 생성메시지를 통해 초기화해야 될 멤버 변수.
-    IBaseObject(pScene, x, y),
+    IBaseObject(x, y),
     m_ID(id),
     m_iDirection(direction),
     m_iHP(hp),
@@ -64,10 +61,9 @@ CPlayer::CPlayer(IBaseScene* pScene, int id, int direction, int x, int y, int hp
     m_bAttackFlag(false),
     m_DamagedPlayerX(0),
     m_DamagedPlayerY(0),
-    m_bDelete(false)
-   
+    m_bDamageFlag(false),
+    m_bDelete(false) 
 {
-    m_stCurrentSprite = SINGLETON(CSpriteManager)->GetSprite(IBaseObject::PLAYER, m_iDirection, STAND, 0);
 }
 
 int CPlayer::GetID()
@@ -135,16 +131,6 @@ bool CPlayer::Update()
 __int32 CPlayer::GetType()
 {
     return PLAYER;
-}
-
-RECT CPlayer::GetHitBox()
-{
-    return RECT();
-}
-
-RECT CPlayer::GetCollisionBox()
-{
-    return RECT();
 }
 
 void CPlayer::ActionInput(__int32 iStatus, __int32 iDirection, __int32 iMoveDirection)
@@ -248,11 +234,9 @@ void CPlayer::GenEffect()
             //Effect를 생성시킴
             m_bAttackFlag = false;
             SINGLETON(CLogManager)->PrintConsoleLog(L"GenEffect\n",0);
-            SINGLETON(CObjectManager)->AddObject(CObjectManager::GAME_SCENE, new Effect(m_pCurrentScene, m_DamagedPlayerX, m_DamagedPlayerY));
+            SINGLETON(CObjectManager)->AddObject(new Effect(m_DamagedPlayerX, m_DamagedPlayerY));
         }
     }
-
-    
 }
 
 void CPlayer::SetDelete(bool bDelete)
@@ -499,36 +483,3 @@ void CPlayer::InputActionProc()
     m_PrevStatus = m_iStatus;
     m_PrevDirection = m_iMoveDirection;
 }
-
-void CPlayer::UpdateRect()
-{
-    RECT rectCollisonBox = m_stCurrentSprite->m_rectCollisionBox;
-    RECT rectHitBox = m_stCurrentSprite->m_rectHitBox;
-    __int32 originX = m_stCurrentSprite->m_iOriginX;
-    __int32 originY = m_stCurrentSprite->m_iOriginY;
-
-    int zeroPointX = m_iX - originX;
-    int zeroPointY = m_iY - originY;
-
-    int rectLeft = zeroPointX + rectCollisonBox.left;
-    int rectTop = zeroPointY + rectCollisonBox.top;
-    int rectRight = rectLeft + rectCollisonBox.right - rectCollisonBox.left;
-    int rectBottom = rectTop + rectCollisonBox.bottom - rectCollisonBox.top;
-
-    m_rectCollisionBox.left = rectLeft;
-    m_rectCollisionBox.top = rectTop;
-    m_rectCollisionBox.right = rectRight;
-    m_rectCollisionBox.bottom = rectBottom;
-
-    rectLeft = zeroPointX + rectHitBox.left;
-    rectTop = zeroPointY + rectHitBox.top;
-    rectRight = rectLeft + rectHitBox.right - rectHitBox.left;
-    rectBottom = rectTop + rectHitBox.bottom - rectHitBox.top;
-
-    m_rectHitBox.left = rectLeft;
-    m_rectHitBox.top = rectTop;
-    m_rectHitBox.right = rectRight;
-    m_rectHitBox.bottom = rectBottom;
-
-}
-

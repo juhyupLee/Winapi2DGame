@@ -1,5 +1,4 @@
 #pragma once
-#include "MemoryTracer.h"
 
 template <typename T>
 class CList
@@ -143,6 +142,7 @@ private:
 private:
 	void QuickSort(T* arr, int left, int right, bool (*ptr)(T object1, T object2));
 	void QuickSort(T* arr, int left, int right);
+	//void BubbleSort(bool (*ptr)(T object1, T object2));
 	//void DebugPrint(int* arr, int size, int start, int end, int checkindex1, int checkindex2);
 };
 
@@ -460,6 +460,7 @@ inline void CList<T>::QuickSort(T* arr, int left, int right)
 	QuickSort(arr, left, pivot - 1);
 	QuickSort(arr, pivot + 1, right);
 }
+
 //template <typename T>
 //void CList<T>::DebugPrint(int* arr, int size, int start, int end, int checkindex1, int checkindex2)
 //{

@@ -7,14 +7,14 @@
 #include "Player.h"
 #include "GlobalVariable.h"
 #include "PacketDefine.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 
 #include "BackBuffer.h"
 #include <cassert>
 
-CMonster::CMonster(IBaseScene* pScene)
+CMonster::CMonster()
     :
-    IBaseObject(pScene),
+    IBaseObject(),
     m_iStatus(0),
     m_iDirection(0),
     m_iAni_CurrentFrame(0),
@@ -104,16 +104,6 @@ bool CMonster::Update()
 __int32 CMonster::GetType()
 {
     return PLAYER;
-}
-
-RECT CMonster::GetHitBox()
-{
-    return RECT();
-}
-
-RECT CMonster::GetCollisionBox()
-{
-    return RECT();
 }
 
 void CMonster::ActionInput(__int32 iStatus, __int32 iDirection, __int32 iMoveDirection)

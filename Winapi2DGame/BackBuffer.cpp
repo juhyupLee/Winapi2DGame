@@ -6,7 +6,7 @@
 #include "Player.h"
 #include "GlobalVariable.h"
 #include "BackBuffer.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 
 CBackBuffer* CBackBuffer::GetInstance()
 {

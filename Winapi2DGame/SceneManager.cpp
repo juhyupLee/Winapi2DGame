@@ -18,7 +18,7 @@
 #include "MyLinkedList.h"
 #include <unordered_map>
 #include "GameScene.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 CSceneManager::CSceneManager()
     :
     m_bEnterFrame(false),
@@ -43,7 +43,6 @@ CSceneManager* CSceneManager::GetInstance()
 
 bool CSceneManager::Run()
 {
-    
     if (nullptr == m_currentScene)
     {
         return false;

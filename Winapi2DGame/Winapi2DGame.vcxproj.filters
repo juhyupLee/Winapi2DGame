@@ -128,6 +128,9 @@
     <ClInclude Include="Effect.h">
       <Filter>소스 파일\Object</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalFunction.h">
+      <Filter>소스 파일\GlobalVariable</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Winapi2DGame.rc">
@@ -208,6 +211,9 @@
     </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalFunction.cpp">
+      <Filter>소스 파일\GlobalVariable</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

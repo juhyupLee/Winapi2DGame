@@ -1,7 +1,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "SpriteManager.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 CSpriteManager::CSpriteManager()
 	:
 	m_stSprite{ 0, },

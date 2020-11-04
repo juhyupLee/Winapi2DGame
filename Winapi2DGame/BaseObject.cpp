@@ -4,11 +4,10 @@
 #include <iostream>
 #include <Windows.h>
 #include "LogManager.h"
-IBaseObject::IBaseObject(IBaseScene* pScene,int x, int y)
+IBaseObject::IBaseObject(int x, int y)
 	:
 	m_iX(x),
 	m_iY(y),
-	m_pCurrentScene(pScene),
 	m_iSpriteStart(0),
 	m_iSpriteMax(0),
 	m_iFrameDelay(0),
@@ -18,11 +17,10 @@ IBaseObject::IBaseObject(IBaseScene* pScene,int x, int y)
 {
 }
 
-IBaseObject::IBaseObject(IBaseScene* pScene)
+IBaseObject::IBaseObject()
 	:
 	m_iX(0),
 	m_iY(0),
-	m_pCurrentScene(pScene),
 	m_iSpriteStart(0),
 	m_iSpriteMax(0),
 	m_iFrameDelay(0),
@@ -36,10 +34,7 @@ IBaseObject::~IBaseObject()
 {
 }
 
-void IBaseObject::SetScene(IBaseScene* pScene)
-{
-	m_pCurrentScene = pScene;
-}
+
 
 void IBaseObject::SetSprite(int iSpriteStart, int iSpriteMax, int iFrameDelay)
 {

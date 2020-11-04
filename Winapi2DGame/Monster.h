@@ -28,13 +28,11 @@ public:
 		ATTACK2,
 		ATTACK3
 	};
-	CMonster(IBaseScene* pScene);
+	CMonster();
 	virtual ~CMonster();
 	virtual void Render() ;
 	virtual bool Update() ;
 	virtual __int32 GetType();
-	virtual RECT GetHitBox() ;
-	virtual RECT GetCollisionBox() ;
 
 	void ActionInput(__int32 iStatus, __int32 iDirection, __int32 iMoveDirection);
 	

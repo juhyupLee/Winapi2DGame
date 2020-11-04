@@ -36,11 +36,18 @@
 #include "SceneManager.h"
 #include "LogManager.h"
 #include "Profiler.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 #include <iostream>
 #include "RingBuffer.h"
+#include "GlobalFunction.h"
 
 
+#include <Windows.h>
+#include "MyLinkedList.h"
+#include "BaseScene.h"
+#include "BaseObject.h"
+#include <unordered_map>
+#include "ObjectManager.h"
 #define MAX_LOADSTRING 100
 
 
@@ -56,7 +63,6 @@ void Init_Game();
 void Init_Network();
 void SelectProcess(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void RecvEvent();
-void SendEvent();
 
 HWND g_hWnd = 0;
 RECT g_WindowRect;
@@ -72,6 +78,8 @@ RingBuffer g_SendRingBuffer;
 
 SOCKET g_Socket;
 bool g_bConnected = false;
+
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -86,7 +94,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
     int fpsCount = 0;
     long long fpsTime = GetTickCount64();
-    
+   
     while (true)
     {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -97,7 +105,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             }
             TranslateMessage(&msg);
             DispatchMessage(&msg);
-        }   
+        }
         else
         {
             //-----------------------------------------
@@ -113,7 +121,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             //-----------------------------------------
             //> 게임 로직이 도는곳(Update Render KeyProcess Network)
             //-----------------------------------------
-            SINGLETON(CTimeManager)->GameTimeStart();
             if (!SINGLETON(CSceneManager)->Run())    
             {
                 break;
@@ -195,7 +202,6 @@ BOOL Init_Window(HINSTANCE hInstance)
     return TRUE;
 }
 
-
 void Init_Game()
 {
     SINGLETON(CSceneManager)->ChangeScene(CSceneManager::GAME_SCENE);
@@ -259,7 +265,10 @@ void SelectProcess(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 void RecvEvent()
 {
     int directEnQSize = g_RecvRingBuffer.GetDirectEnqueueSize();
-    int recvRtn = recv(g_Socket, g_RecvRingBuffer.GetRearBufferPtr(), directEnQSize, 0);
+    char* tempBuffer = g_RecvRingBuffer.GetRearBufferPtr();
+
+    int recvRtn = recv(g_Socket, tempBuffer, directEnQSize, 0);
+
 #ifdef _DEBUG
     SINGLETON(CLogManager)->PrintConsoleLog(L"RecvEvent RecvReturn:%d\n", recvRtn);
 #endif
@@ -275,30 +284,10 @@ void RecvEvent()
         }
     }
     g_RecvRingBuffer.MoveRear(recvRtn);
-
+    Marshalling();
 }
-void SendEvent()
-{
-    char tempBuffer[10000];
 
-    while (g_SendRingBuffer.GetUsedSize() != 0)
-    {
-        int directDeQSize = g_SendRingBuffer.GetDirectDequeueSize();
 
-        int peekRtn = g_SendRingBuffer.Peek(tempBuffer, directDeQSize);
-        int sendRtn = send(g_Socket, tempBuffer, peekRtn, 0);
-        if (sendRtn<=0)
-        {
-#ifdef _DEBUG
-            SINGLETON(CLogManager)->PrintConsoleLog(L"Send Error:%d\n", WSAGetLastError());
-#endif
-            return;
-        }
-        g_SendRingBuffer.MoveFront(sendRtn);
-    }
-    
-
-}
 //
 //  함수: WndProc(HWND, UINT, WPARAM, LPARAM)
 //

@@ -4,7 +4,7 @@
 #include "BaseObject.h"
 #include <unordered_map>
 #include "ObjectManager.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 
 #include <iostream>
 #include <Windows.h>
@@ -28,11 +28,7 @@ CObjectManager::CObjectManager()
 }
 CObjectManager::~CObjectManager()
 {
-    for (int i = 0; i < SCENE_MAX; ++i)
-    {
-        ReleaseObject(i);
-    }
-   
+    ReleaseObject();
 }
 CObjectManager* CObjectManager::GetInstance()
 {
@@ -40,11 +36,11 @@ CObjectManager* CObjectManager::GetInstance()
     return &objectManager;
 }
 
-void CObjectManager::OtherPlayerActionInput(int scene, int id,int state, BYTE direction, int x, int y,bool inputStatus)
+void CObjectManager::OtherPlayerActionInput(int id, int state, BYTE direction, int x, int y,bool inputStatus)
 {
-    auto iter = m_ObjectList[scene].begin();
+    auto iter = m_ObjectList.begin();
 
-    for (; iter != m_ObjectList[scene].end();++iter)
+    for (; iter != m_ObjectList.end();++iter)
     {
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
@@ -60,13 +56,13 @@ void CObjectManager::OtherPlayerActionInput(int scene, int id,int state, BYTE di
     }
 }
 
-void CObjectManager::AttackCheck(int scene, int attackID, int damageID, int damageHP)
+void CObjectManager::AttackCheck(int attackID, int damageID, int damageHP)
 {
-    auto iter = m_ObjectList[scene].begin();
+    auto iter = m_ObjectList.begin();
     int damagePlayexX = 0;
     int damagePlayexY = 0;
 
-    for (; iter != m_ObjectList[scene].end(); ++iter)
+    for (; iter != m_ObjectList.end(); ++iter)
     {
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
@@ -75,14 +71,15 @@ void CObjectManager::AttackCheck(int scene, int attackID, int damageID, int dama
                 ((CPlayer*)(*iter))->SetHP(damageHP);
                 damagePlayexX = ((CPlayer*)(*iter))->GetX();
                 damagePlayexY = ((CPlayer*)(*iter))->GetY();
+                break;
             }
         }
 
     }
 
-    iter = m_ObjectList[scene].begin();
+    iter = m_ObjectList.begin();
 
-    for (; iter != m_ObjectList[scene].end(); ++iter)
+    for (; iter != m_ObjectList.end(); ++iter)
     {
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
@@ -90,19 +87,18 @@ void CObjectManager::AttackCheck(int scene, int attackID, int damageID, int dama
             {
                 ((CPlayer*)(*iter))->SetAttackFlag(true);
                 ((CPlayer*)(*iter))->SetDamagePlayedXY(damagePlayexX, damagePlayexY);
+                break;
             }
         }
-
     }
   
 }
 
-void CObjectManager::DeletePlayer(int scene, int id)
+void CObjectManager::DeletePlayer(int id)
 {
-    auto iter = m_ObjectList[scene].begin();
+    auto iter = m_ObjectList.begin();
 
-
-    for (; iter != m_ObjectList[scene].end(); ++iter)
+    for (; iter != m_ObjectList.end(); ++iter)
     {
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
@@ -115,18 +111,16 @@ void CObjectManager::DeletePlayer(int scene, int id)
     }
 }
 
-void CObjectManager::Update(int scene)
+void CObjectManager::Update()
 {
-    auto iter = m_ObjectList[scene].begin();
+    auto iter = m_ObjectList.begin();
 
-    for (; iter != m_ObjectList[scene].end();)
+    for (; iter != m_ObjectList.end();)
     {
-        CollisionCheck(scene, *iter);
-
         if (false == (*iter)->Update())
         {
             delete* iter;
-            iter = m_ObjectList[scene].erase(iter);
+            iter = m_ObjectList.erase(iter);
         }
         else
         {
@@ -134,58 +128,37 @@ void CObjectManager::Update(int scene)
         }
     }
 }
-void CObjectManager::Render(int scene)
+void CObjectManager::Render()
 {
+    m_ObjectList.sort(temp);
+    
+    auto iter = m_ObjectList.begin();
+    int i = 1;
 
-    m_ObjectList[scene].sort(temp);
-    auto iter = m_ObjectList[scene].begin();
-
-    for (; iter != m_ObjectList[scene].end();++iter)
+    for (; iter != m_ObjectList.end();++iter)
     {
         (*iter)->Render();
+        CLogManager::GetInstance()->PrintConsoleLog(L"Y Sort Log Y[%d]:%d\n",i, (*iter)->GetY());
+        ++i;
     }
 }
 
-void CObjectManager::AddObject(__int32 sceneNum, IBaseObject* object)
+void CObjectManager::AddObject(IBaseObject* object)
 {
-    m_ObjectList[sceneNum].push_back(object);
-}
-void CObjectManager::AddCollisionObject(int key, int value)
-{
-    m_CollisionObjectMap.insert(std::make_pair(key, value));   //>Key : 충돌대상1, value : 충돌대상2
+    m_ObjectList.push_back(object);
 }
 
-void CObjectManager::ReleaseObject(__int32 scene)
-{
-    auto iter = m_ObjectList[scene].begin();
 
-    for (; iter != m_ObjectList[scene].end();)
+void CObjectManager::ReleaseObject()
+{
+    auto iter = m_ObjectList.begin();
+
+    for (; iter != m_ObjectList.end();)
     {
         delete (*iter);
-        iter = m_ObjectList[scene].erase(iter);
+        iter = m_ObjectList.erase(iter);
     }
 }
 
-void CObjectManager::CollisionCheck(int scene, IBaseObject* object)
-{
-    auto mapIter = m_CollisionObjectMap.find(object->GetType());
-
-    if (mapIter == m_CollisionObjectMap.end())
-    {
-        return;
-    }
-    auto listIter = m_ObjectList[scene].begin();
-
-    for (; listIter != m_ObjectList[scene].end(); ++listIter)
-    {
-        if ((*mapIter).second == (*listIter)->GetType())
-        {
-            //충돌체크
-            //충돌체크 트루면, 충돌알림
-
-        }
-    }
-
-}
 
 

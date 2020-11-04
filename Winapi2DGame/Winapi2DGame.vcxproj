@@ -90,6 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,6 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,9 +153,13 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="GlobalFunction.h" />
     <ClInclude Include="GlobalVariable.h" />
     <ClInclude Include="LogManager.h" />
-    <ClInclude Include="MemoryTracer.h" />
+    <ClInclude Include="MemoryTracer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MyLinkedList.h" />
     <ClInclude Include="ObjectManager.h" />
@@ -181,7 +187,10 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="Utility.h" />
-    <ClInclude Include="Winapi2DGame.h" />
+    <ClInclude Include="Winapi2DGame.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BackBuffer.cpp" />
@@ -191,8 +200,12 @@
     <ClCompile Include="CreatePacket.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="GlobalFunction.cpp" />
     <ClCompile Include="LogManager.cpp" />
-    <ClCompile Include="MemoryTracer.cpp" />
+    <ClCompile Include="MemoryTracer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -214,7 +227,10 @@
     <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="TimeManager.cpp" />
     <ClCompile Include="Utility.cpp" />
-    <ClCompile Include="Winapi2DGame.cpp" />
+    <ClCompile Include="Winapi2DGame.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Winapi2DGame.rc" />

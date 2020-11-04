@@ -10,7 +10,7 @@
 #include "SpriteManager.h"
 #include "Player.h"
 #include "GlobalVariable.h"
-#include "MemoryTracer.h"
+//#include "MemoryTracer.h"
 
 CTimeManager::CTimeManager()
 	:

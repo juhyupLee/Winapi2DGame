@@ -198,7 +198,6 @@ void operator delete(void* p)
 	case CMemoryTracer::NOALLOC:
 		g_MemoryTrace.WriteLog(p, CMemoryTracer::NOALLOC, index);
 		break;
-
 	}
 }
 void operator delete[](void* p)
