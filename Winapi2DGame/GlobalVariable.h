@@ -8,7 +8,7 @@
 #define WM_NETWORK WM_USER+1
 #define SERVER_PORT 5000
 #define SERVER_IP L"127.0.0.1"
-
+//#define SERVER_IP L"1.238.242.90"
 extern HANDLE g_Handle;
 extern HWND  g_hWnd;
 

@@ -142,7 +142,7 @@ private:
 private:
 	void QuickSort(T* arr, int left, int right, bool (*ptr)(T object1, T object2));
 	void QuickSort(T* arr, int left, int right);
-	//void BubbleSort(bool (*ptr)(T object1, T object2));
+	void BubbleSort(bool (*ptr)(T object1, T object2));
 	//void DebugPrint(int* arr, int size, int start, int end, int checkindex1, int checkindex2);
 };
 
@@ -279,7 +279,8 @@ inline void CList<T>::sort(bool(*ptr)(T object1, T object2))
 	// 기존 노드를 Clear하고 다시 소팅한 노드를 Push Back 해준다.
 	//------------------------------
 
-	T* arr = new T[_size];
+	BubbleSort(ptr);
+	/*T* arr = new T[_size];
 
 	auto iter = this->begin();
 
@@ -296,7 +297,7 @@ inline void CList<T>::sort(bool(*ptr)(T object1, T object2))
 		push_back(arr[i]);
 	}
 	
-	delete[] arr;
+	delete[] arr;*/
 }
 
 template<typename T>
@@ -459,6 +460,36 @@ inline void CList<T>::QuickSort(T* arr, int left, int right)
 
 	QuickSort(arr, left, pivot - 1);
 	QuickSort(arr, pivot + 1, right);
+}
+
+template<typename T>
+inline void CList<T>::BubbleSort(bool(*ptr)(T object1, T object2))
+{
+	auto iter1 = begin();
+	auto iter2 = begin();
+
+	++iter2;
+
+	for (int i= _size - 1; i>=0; --i)
+	{
+	
+		for (int j = 0; j < i; j++)
+		{
+			if (ptr(*iter1, *iter2))
+			{
+				auto temp = *iter1;
+				*iter1 = *iter2;
+				*iter2 = temp;
+			}
+		
+			++iter1;
+			++iter2;
+		}
+		iter1 = begin();
+		iter2 = begin();
+		++iter2;
+	}
+
 }
 
 //template <typename T>

@@ -138,8 +138,8 @@ void CObjectManager::Render()
     for (; iter != m_ObjectList.end();++iter)
     {
         (*iter)->Render();
-        CLogManager::GetInstance()->PrintConsoleLog(L"Y Sort Log Y[%d]:%d\n",i, (*iter)->GetY());
-        ++i;
+       // CLogManager::GetInstance()->PrintConsoleLog(L"Y Sort Log Y[%d]:%d\n",i, (*iter)->GetY());
+        //++i;
     }
 }
 
