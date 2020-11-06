@@ -42,6 +42,13 @@ void CObjectManager::OtherPlayerActionInput(int id, int state, BYTE direction, i
 
     for (; iter != m_ObjectList.end();++iter)
     {
+        if ((*iter)->GetType() == IBaseObject::EFFECT)
+        {
+            if (((CPlayer*)(*iter))->GetID() == id)
+            {
+                int a = 10;
+            }
+        }
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
             if (((CPlayer*)(*iter))->GetID() == id)
@@ -64,6 +71,15 @@ void CObjectManager::AttackCheck(int attackID, int damageID, int damageHP)
 
     for (; iter != m_ObjectList.end(); ++iter)
     {
+        if ((*iter)->GetType() == IBaseObject::EFFECT)
+        {
+            if (((CPlayer*)(*iter))->GetID() == damageID)
+            {
+                int a = 10;
+            }
+        }
+
+   
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
             if (((CPlayer*)(*iter))->GetID() == damageID)
@@ -81,6 +97,15 @@ void CObjectManager::AttackCheck(int attackID, int damageID, int damageHP)
 
     for (; iter != m_ObjectList.end(); ++iter)
     {
+        if ((*iter)->GetType() == IBaseObject::EFFECT)
+        {
+            int a = 20;
+            int b = ((CPlayer*)(*iter))->GetID();
+            if (b == attackID)
+            {
+                int a = 10;
+            }
+        }
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
             if (((CPlayer*)(*iter))->GetID() == attackID)
@@ -100,6 +125,13 @@ void CObjectManager::DeletePlayer(int id)
 
     for (; iter != m_ObjectList.end(); ++iter)
     {
+        if ((*iter)->GetType() == IBaseObject::EFFECT)
+        {
+            if (((CPlayer*)(*iter))->GetID() == id)
+            {
+                int a = 10;
+            }
+        }
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
             if (((CPlayer*)(*iter))->GetID() == id)
@@ -117,6 +149,7 @@ void CObjectManager::Update()
 
     for (; iter != m_ObjectList.end();)
     {
+   
         if (false == (*iter)->Update())
         {
             delete* iter;
@@ -138,8 +171,8 @@ void CObjectManager::Render()
     for (; iter != m_ObjectList.end();++iter)
     {
         (*iter)->Render();
-       // CLogManager::GetInstance()->PrintConsoleLog(L"Y Sort Log Y[%d]:%d\n",i, (*iter)->GetY());
-        //++i;
+        CLogManager::GetInstance()->PrintConsoleLog(L"Y Sort Log Y[%d]:%d\n",i, (*iter)->GetY());
+        ++i;
     }
 }
 

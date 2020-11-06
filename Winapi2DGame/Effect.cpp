@@ -49,7 +49,7 @@ bool Effect::Update()
 
 __int32 Effect::GetType()
 {
-    return 0;
+    return IBaseObject::EFFECT;
 }
 
 

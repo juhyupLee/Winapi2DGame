@@ -227,6 +227,8 @@ void CPlayer::GenEffect()
         return;
     }
 
+    int sizeeffect = sizeof(Effect);
+
     if (m_iStatus == ATTACK1 || m_iStatus == ATTACK2 || m_iStatus == ATTACK3)
     {
         if (m_iSpriteNow == m_iSpriteMax-2)
