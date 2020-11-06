@@ -22,7 +22,6 @@ HANDLE g_Handle;
 
 void Marshalling()
 {
-
 	SINGLETON(CLogManager)->PrintConsoleLog(L"CPlayer:%d\n", sizeof(CPlayer));
 	char tempBuffer[1000];
 	while (true)
@@ -97,6 +96,7 @@ void SendEvent()
         {
 #ifdef _DEBUG
             SINGLETON(CLogManager)->PrintConsoleLog(L"Send Error:%d\n", WSAGetLastError());
+			SINGLETON(CLogManager)->PrintLog(L"ErrorLog.txt", L"Send() error", WSAGetLastError());
 #endif
             return;
         }
@@ -188,5 +188,6 @@ void DeleteCharacter(char* payload)
 {
 	Packet_SC_Delete_Character* packet = (Packet_SC_Delete_Character*)payload;
 	SINGLETON(CLogManager)->PrintConsoleLog(L"[Delete (SC)]  ID:%d \n", packet->id);
+	SINGLETON(CLogManager)->PrintLog(L"[Delete (SC)]  ID", packet->id);
 	SINGLETON(CObjectManager)->DeletePlayer(packet->id);
 }

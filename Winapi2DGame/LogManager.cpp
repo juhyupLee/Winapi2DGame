@@ -2,7 +2,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "LogManager.h"
-//#include "MemoryTracer.h"
+#include <time.h>
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #else
@@ -11,7 +11,27 @@
 
 CLogManager::CLogManager()
 {
+    memset(m_FileName, 0, FILE_NAME);
+    FILE* filePtr = nullptr;
 
+    tm timeResult;
+    time_t  timeT;
+    time(&timeT);
+    localtime_s(&timeResult, &timeT);
+
+    wsprintf(m_FileName, L"ServerLog_%d%d%d_%d[H]%d[M]%d[S].txt", timeResult.tm_year + 1900,
+        timeResult.tm_mon + 1,
+        timeResult.tm_mday,
+        timeResult.tm_hour,
+        timeResult.tm_min,
+        timeResult.tm_sec);
+    _wfopen_s(&filePtr, m_FileName, L"w");
+
+    if (filePtr == nullptr)
+    {
+        return;
+    }
+    fclose(filePtr);
 }
 CLogManager::~CLogManager()
 {
@@ -21,6 +41,34 @@ CLogManager* CLogManager::GetInstance()
 {
     static CLogManager logManager;
     return &logManager;
+}
+
+void CLogManager::PrintLog(const WCHAR* str)
+{
+    FILE* filePtr = nullptr;
+    _wfopen_s(&filePtr, m_FileName, L"a");
+    while (filePtr == nullptr)
+    {
+        _wfopen_s(&filePtr, m_FileName, L"a");
+    }
+    fwprintf(filePtr, str);
+    fclose(filePtr);
+
+}
+
+void CLogManager::PrintLog(const WCHAR* str, __int32 var)
+{
+    FILE* filePtr = nullptr;
+    WCHAR buffer[256];
+
+    _wfopen_s(&filePtr, m_FileName, L"a");
+    while (filePtr == nullptr)
+    {
+        _wfopen_s(&filePtr, m_FileName, L"a");
+    }
+    wsprintf(buffer,L"%s :%d\n", str, var);
+    fwprintf(filePtr, buffer);
+    fclose(filePtr);
 }
 
 void CLogManager::PrintLog(const WCHAR* fileName, const WCHAR* str, __int32 var)

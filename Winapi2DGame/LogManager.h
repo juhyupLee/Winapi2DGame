@@ -5,7 +5,13 @@ private:
 	CLogManager();
 	~CLogManager();
 public:
+	enum
+	{
+		FILE_NAME = 128
+	};
 	static CLogManager* GetInstance();
+	void PrintLog(const WCHAR* str);
+	void PrintLog(const WCHAR* str, __int32 var);
 	void PrintLog(const WCHAR* fileName,const WCHAR* str, __int32 var);
 	void PrintLog(const WCHAR* fileName,const WCHAR* str, __int64 var);
 	void PrintLog(const WCHAR* fileName,const WCHAR* str, float var);
@@ -22,4 +28,8 @@ public:
 	void PrintConsoleLog(const WCHAR* str, __int32 var1, __int32 var2, __int32 var3, __int32 var4);
 	void PrintConsoleLog(const WCHAR* str, __int32 var1, __int32 var2);
 	void PrintConsoleLog(const WCHAR* str, __int32 var1);
+	
+private:
+	WCHAR m_FileName[128];
+
 };

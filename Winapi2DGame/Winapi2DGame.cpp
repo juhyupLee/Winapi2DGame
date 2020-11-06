@@ -41,13 +41,17 @@
 #include "RingBuffer.h"
 #include "GlobalFunction.h"
 
-
 #include <Windows.h>
 #include "MyLinkedList.h"
 #include "BaseScene.h"
 #include "BaseObject.h"
 #include <unordered_map>
 #include "ObjectManager.h"
+
+#include <stdio.h>
+#include <WinSock2.h>
+#include "LogManager.h"
+#include "SocketLog.h"
 #define MAX_LOADSTRING 100
 
 
@@ -66,7 +70,7 @@ void RecvEvent();
 
 HWND g_hWnd = 0;
 RECT g_WindowRect;
-BOOL g_bActiveWindow;
+BOOL g_bActiveWindow=true;
 
 WCHAR g_FPSBuf[100];
 HIMC g_hOldIMC;
@@ -243,6 +247,7 @@ void SelectProcess(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     if (WSAGETSELECTERROR(lParam))
     {
         SINGLETON(CLogManager)->PrintConsoleLog(L"SelectProcess() error%d", WSAGETSELECTERROR(lParam));
+        SINGLETON(CLogManager)->PrintLog(L"SelectProcess() error", WSAGETSELECTERROR(lParam));
     }
     switch (WSAGETSELECTEVENT(lParam))
     {
@@ -257,6 +262,7 @@ void SelectProcess(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         SendEvent();
         break;
     case FD_CLOSE:
+        SINGLETON(CLogManager)->PrintLog(L"FD_CLOSE", WSAGetLastError());
         MessageBox(hWnd, L"You Died........ ", MB_OK, 0);
         PostQuitMessage(0);
         break;
@@ -267,6 +273,10 @@ void RecvEvent()
     int directEnQSize = g_RecvRingBuffer.GetDirectEnqueueSize();
     char* tempBuffer = g_RecvRingBuffer.GetRearBufferPtr();
 
+    if (g_RecvRingBuffer.GetFreeSize() == 0)
+    {
+        SINGLETON(CLogManager)->PrintLog(L"ErrorLog.txt", L"Recv() error", WSAGetLastError());
+    }
     int recvRtn = recv(g_Socket, tempBuffer, directEnQSize, 0);
 
 #ifdef _DEBUG
@@ -276,6 +286,7 @@ void RecvEvent()
     {
 #ifdef _DEBUG
         SINGLETON(CLogManager)->PrintConsoleLog(L"Recv Error:%d\n", recvRtn);
+        SINGLETON(CLogManager)->PrintLog(L"ErrorLog.txt", L"Recv() error", WSAGetLastError());
 #endif
         if (WSAGetLastError() != WSAEWOULDBLOCK)
         {
@@ -303,7 +314,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_ACTIVATEAPP:
-        g_bActiveWindow = (BOOL)wParam;
+        //g_bActiveWindow = (BOOL)wParam;
         break;
       
     case WM_PAINT:
