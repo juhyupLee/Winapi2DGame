@@ -134,6 +134,9 @@
     <ClInclude Include="SocketLog.h">
       <Filter>소스 파일\Library</Filter>
     </ClInclude>
+    <ClInclude Include="SerializeBuffer.h">
+      <Filter>소스 파일\Library</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Winapi2DGame.rc">
@@ -219,6 +222,9 @@
       <Filter>소스 파일\GlobalVariable</Filter>
     </ClCompile>
     <ClCompile Include="SocketLog.cpp">
+      <Filter>소스 파일\Library</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializeBuffer.cpp">
       <Filter>소스 파일\Library</Filter>
     </ClCompile>
   </ItemGroup>

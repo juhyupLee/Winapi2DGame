@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include "MyLinkedList.h"
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include <unordered_map>
 #include "ObjectManager.h"
@@ -9,6 +10,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"
@@ -79,7 +81,6 @@ void CObjectManager::AttackCheck(int attackID, int damageID, int damageHP)
             }
         }
 
-   
         if ((*iter)->GetType() == IBaseObject::PLAYER)
         {
             if (((CPlayer*)(*iter))->GetID() == damageID)
@@ -149,7 +150,6 @@ void CObjectManager::Update()
 
     for (; iter != m_ObjectList.end();)
     {
-   
         if (false == (*iter)->Update())
         {
             delete* iter;
@@ -171,7 +171,7 @@ void CObjectManager::Render()
     for (; iter != m_ObjectList.end();++iter)
     {
         (*iter)->Render();
-        CLogManager::GetInstance()->PrintConsoleLog(L"Y Sort Log Y[%d]:%d\n",i, (*iter)->GetY());
+       // CLogManager::GetInstance()->PrintConsoleLog(L"Y Sort Log Y[%d]:%d\n",i, (*iter)->GetY());
         ++i;
     }
 }

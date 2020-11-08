@@ -1,49 +1,97 @@
 #include "PacketDefine.h"
-#include "PacketStructure.h"
+//#include "PacketStructure.h"
+#include <iostream>
+#include <Windows.h>
+#include <cassert>
+#include "SerializeBuffer.h"
 #include "CreatePacket.h"
 
-void CreateAttack1Packet(PacketHeader* header, Packet_CS_Attack1* payload, BYTE direction, int x, int y)
-{
-	header->code = CODE;
-	header->size = sizeof(Packet_CS_Attack1);
-	header->type = dfPACKET_CS_ATTACK1;
 
-	payload->direction = direction;
-	payload->x = x;
-	payload->y = y;
+
+void CreateMoveStartPacket(SerializeBuffer* serializeBuffer, BYTE direction, int16_t x, int16_t y)
+{
+	BYTE code;
+	BYTE size;
+	BYTE type;
+
+	code = CODE;
+	size = sizeof(direction) + sizeof(x) + sizeof(y);
+	type = dfPACKET_CS_MOVE_START;
+
+	*serializeBuffer << code << size << type;
+	*serializeBuffer << direction << x << y;
+
 }
 
-void CreateAttack2Packet(PacketHeader* header, Packet_CS_Attack2* payload, BYTE direction, int x, int y)
+void CreateMoveStopPacket(SerializeBuffer* serializeBuffer, BYTE direction, int16_t x, int16_t y)
 {
-	header->code = CODE;
-	header->size = sizeof(Packet_CS_Attack2);
-	header->type = dfPACKET_CS_ATTACK2;
+	BYTE code;
+	BYTE size;
+	BYTE type;
 
-	payload->direction = direction;
-	payload->x = x;
-	payload->y = y;
+	code = CODE;
+	size = sizeof(direction) + sizeof(x) + sizeof(y);
+	type = dfPACKET_CS_MOVE_STOP;
+
+	*serializeBuffer << code << size << type;
+	*serializeBuffer << direction << x << y;
 }
 
-void CreateAttack3Packet(PacketHeader* header, Packet_CS_Attack3* payload, BYTE direction, int x, int y)
+void CreateAttack1Packet(SerializeBuffer* serializeBuffer, BYTE direction, int16_t x, int16_t y)
 {
-	header->code = CODE;
-	header->size = sizeof(Packet_CS_Attack3);
-	header->type = dfPACKET_CS_ATTACK3;
+	BYTE code;
+	BYTE size;
+	BYTE type;
 
-	payload->direction = direction;
-	payload->x = x;
-	payload->y = y;
+	code = CODE;
+	size = sizeof(direction) + sizeof(x) + sizeof(y);
+	type = dfPACKET_CS_ATTACK1;
+
+	*serializeBuffer << code << size << type;
+	*serializeBuffer << direction << x << y;
 }
 
-void CreateStopPacket(PacketHeader* header, Packet_CS_Move_Stop* payload, BYTE direction, int x, int y)
+void CreateAttack2Packet(SerializeBuffer* serializeBuffer, BYTE direction, int16_t x, int16_t y)
 {
-	header->code = CODE;
-	header->size = sizeof(Packet_CS_Move_Stop);
-	header->type = dfPACKET_CS_MOVE_STOP;
+	BYTE code;
+	BYTE size;
+	BYTE type;
 
-	payload->direction = direction;
-	payload->x = x;
-	payload->y = y;
+	code = CODE;
+	size = sizeof(direction) + sizeof(x) + sizeof(y);
+	type = dfPACKET_CS_ATTACK2;
+
+	*serializeBuffer << code << size << type;
+	*serializeBuffer << direction << x << y;
+}
+
+void CreateAttack3Packet(SerializeBuffer* serializeBuffer, BYTE direction, int16_t x, int16_t y)
+{
+	BYTE code;
+	BYTE size;
+	BYTE type;
+
+	code = CODE;
+	size = sizeof(direction) + sizeof(x) + sizeof(y);
+	type = dfPACKET_CS_ATTACK3;
+
+	*serializeBuffer << code << size << type;
+	*serializeBuffer << direction << x << y;
+}
+
+void CreateStopPacket(SerializeBuffer* serializeBuffer, BYTE direction, int16_t x, int16_t y)
+{
+	BYTE code;
+	BYTE size;
+	BYTE type;
+
+	code = CODE;
+	size = sizeof(direction) + sizeof(x)+ sizeof(y);
+	type = dfPACKET_CS_MOVE_STOP;
+
+	*serializeBuffer << code << size << type;
+	*serializeBuffer << direction << x << y;
+
 }
 
 

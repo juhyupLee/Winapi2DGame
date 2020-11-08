@@ -14,6 +14,7 @@
 #include <Windows.h>
 #include <iostream>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"
@@ -22,11 +23,13 @@
 #include <iostream>
 #include <Windows.h>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"
 #include "GlobalVariable.h"
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Sprite.h"
@@ -39,11 +42,16 @@
 //#include "MemoryTracer.h"
 #include <iostream>
 #include "RingBuffer.h"
+#include <iostream>
+#include <Windows.h>
+#include <cassert>
+#include "SerializeBuffer.h"
 #include "GlobalFunction.h"
 
 #include <Windows.h>
 #include "MyLinkedList.h"
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include <unordered_map>
 #include "ObjectManager.h"
@@ -70,7 +78,7 @@ void RecvEvent();
 
 HWND g_hWnd = 0;
 RECT g_WindowRect;
-BOOL g_bActiveWindow=true;
+BOOL g_bActiveWindow=false;
 
 WCHAR g_FPSBuf[100];
 HIMC g_hOldIMC;
@@ -314,7 +322,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_ACTIVATEAPP:
-        //g_bActiveWindow = (BOOL)wParam;
+        g_bActiveWindow = (BOOL)wParam;
         break;
       
     case WM_PAINT:

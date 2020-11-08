@@ -4,13 +4,22 @@
 void SendEvent();
 void Marshalling();
 
-void CreateMyCharacter(char* payload);
-void CreateOtherCharacter(char* payload);
-void MoveStart(char* payload);
-void MoveStop(char* payload);
-void Attack1(char* payload);
-void Attack2(char* payload);
-void Attack3(char* payload);
-void Damage(char* payload);
-void DeleteCharacter(char* payload);
+void CreateMyCharacter(SerializeBuffer* payload);
+//void CreateOtherCharacter(SerializeBuffer* payload);
+//void MoveStart(SerializeBuffer* payload);
+//void MoveStop(SerializeBuffer* payload);
+//void Attack1(SerializeBuffer* payload);
+//void Attack2(SerializeBuffer* payload);
+//void Attack3(SerializeBuffer* payload);
+//void Damage(SerializeBuffer* payload);
+//void DeleteCharacter(SerializeBuffer* payload);
 
+//void CreateMyCharacter(SerializeBuffer* payload);
+void CreateOtherCharacter(SerializeBuffer* payload);
+void MoveStart(SerializeBuffer* payload);
+void MoveStop(SerializeBuffer* payload);
+void Attack1(SerializeBuffer* payload);
+void Attack2(SerializeBuffer* payload);
+void Attack3(SerializeBuffer* payload);
+void Damage(SerializeBuffer* payload);
+void DeleteCharacter(SerializeBuffer* payload);

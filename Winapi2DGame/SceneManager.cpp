@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"
@@ -12,6 +13,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"
@@ -18,11 +19,16 @@
 
 #include "PacketDefine.h"
 #include "PacketStructure.h"
+#include <iostream>
+#include <Windows.h>
+#include <cassert>
+#include "SerializeBuffer.h"
 #include "CreatePacket.h"
 
 #include <Windows.h>
 #include "MyLinkedList.h"
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include <unordered_map>
 #include "ObjectManager.h"
@@ -30,6 +36,7 @@
 #include <iostream>
 #include <Windows.h>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"
@@ -37,6 +44,11 @@
 #include "BackBuffer.h"
 #include "Sprite.h"
 #include "Effect.h"
+
+#include <iostream>
+#include <Windows.h>
+#include <cassert>
+#include "SerializeBuffer.h"
 
 CPlayer::CPlayer(int id, int direction, int x, int y, int hp)
     :
@@ -62,7 +74,7 @@ CPlayer::CPlayer(int id, int direction, int x, int y, int hp)
     m_DamagedPlayerX(0),
     m_DamagedPlayerY(0),
     m_bDamageFlag(false),
-    m_bDelete(false) 
+    m_bDelete(false)
 {
 }
 
@@ -79,6 +91,10 @@ CPlayer::~CPlayer()
 void CPlayer::Render()
 {
     
+    if (m_stCurrentSprite == nullptr)
+    {
+        return;
+    }
     //----------------------------------------
     // HP °ÔÀÌÁö 
     //----------------------------------------
@@ -275,43 +291,40 @@ void CPlayer::ActionProc()
         {
             if (m_PrevStatus == MOVE)
             {
-                PacketHeader header;
-                Packet_CS_Move_Stop payload;
-                CreateStopPacket(&header, &payload, m_iDirection, m_iX, m_iY);
+
+                SerializeBuffer serialBuffer;
+
+                CreateStopPacket(&serialBuffer, m_iDirection, m_iX, m_iY);
                 SINGLETON(CLogManager)->PrintConsoleLog(L"m_iDirection:%d // m_iX:%d //m_iX:%d\n",m_iDirection, m_iX, m_iY,0);
 
-                int enQRtn = g_SendRingBuffer.Enqueue((char*)&header, sizeof(PacketHeader));
-                enQRtn = g_SendRingBuffer.Enqueue((char*)&payload, sizeof(Packet_CS_Move_Stop));
+                int enQRtn = g_SendRingBuffer.Enqueue(serialBuffer.GetBufferPtr(), serialBuffer.GetDataSize());
+
             }
             if ((m_iStatus == ATTACK1 && m_iSpriteNow == 0 && m_iDelayCount == 0))
             {
-                PacketHeader header;
-                Packet_CS_Attack1 payload;
-                CreateAttack1Packet(&header, &payload, m_iDirection, m_iX, m_iY);
+                SerializeBuffer serialBuffer;
+
+                CreateAttack1Packet(&serialBuffer, m_iDirection, m_iX, m_iY);
                 SINGLETON(CLogManager)->PrintConsoleLog(L"m_iStatus:%d // direction:%d // m_iX:%d //m_iX:%d\n", m_iStatus, m_iDirection, m_iX, m_iY);
 
-                int enQRtn = g_SendRingBuffer.Enqueue((char*)&header, sizeof(PacketHeader));
-                enQRtn = g_SendRingBuffer.Enqueue((char*)&payload, sizeof(Packet_CS_Attack1));
+                int enQRtn = g_SendRingBuffer.Enqueue(serialBuffer.GetBufferPtr(), serialBuffer.GetDataSize());
+
             }
             else if ((m_iStatus == ATTACK2 && m_iSpriteNow == 0 && m_iDelayCount == 0))
             {
-                PacketHeader header;
-                Packet_CS_Attack2 payload;
-                CreateAttack2Packet(&header, &payload, m_iDirection, m_iX, m_iY);
+                SerializeBuffer serialBuffer;
+                CreateAttack2Packet(&serialBuffer, m_iDirection, m_iX, m_iY);
                 SINGLETON(CLogManager)->PrintConsoleLog(L"m_iStatus:%d // direction:%d // m_iX:%d //m_iX:%d\n", m_iStatus, m_iDirection, m_iX, m_iY);
 
-                int enQRtn = g_SendRingBuffer.Enqueue((char*)&header, sizeof(PacketHeader));
-                enQRtn = g_SendRingBuffer.Enqueue((char*)&payload, sizeof(Packet_CS_Attack2));
+                int enQRtn = g_SendRingBuffer.Enqueue(serialBuffer.GetBufferPtr(), serialBuffer.GetDataSize());
             }
             else if ((m_iStatus == ATTACK3 && m_iSpriteNow == 0 && m_iDelayCount == 0))
             {
-                PacketHeader header;
-                Packet_CS_Attack3 payload;
-                CreateAttack3Packet(&header, &payload, m_iDirection, m_iX, m_iY);
+                SerializeBuffer serialBuffer;
+                CreateAttack3Packet(&serialBuffer,m_iDirection, m_iX, m_iY);
                 SINGLETON(CLogManager)->PrintConsoleLog(L"m_iStatus:%d // direction:%d // m_iX:%d //m_iX:%d\n", m_iStatus, m_iDirection, m_iX, m_iY);
 
-                int enQRtn = g_SendRingBuffer.Enqueue((char*)&header, sizeof(PacketHeader));
-                enQRtn = g_SendRingBuffer.Enqueue((char*)&payload, sizeof(Packet_CS_Attack3));
+                int enQRtn = g_SendRingBuffer.Enqueue(serialBuffer.GetBufferPtr(), serialBuffer.GetDataSize());
             }
         }
       
@@ -447,36 +460,18 @@ void CPlayer::InputActionProc()
     {
         if (((m_PrevStatus == STAND) && (m_iStatus == MOVE)) || (m_iMoveDirection != m_PrevDirection))
         {
-            Packet_CS_Move_Start tempMoveStart;
-            PacketHeader tempHeader;
-
-            tempHeader.code = 0x89;
-            tempHeader.size = sizeof(Packet_CS_Move_Start);
-            tempHeader.type = dfPACKET_CS_MOVE_START;
-            int enQRtn = g_SendRingBuffer.Enqueue((char*)&tempHeader, sizeof(PacketHeader));
-
-            tempMoveStart.direction = m_iMoveDirection;
-            tempMoveStart.x = m_iX;
-            tempMoveStart.y = m_iY;
-            enQRtn = g_SendRingBuffer.Enqueue((char*)&tempMoveStart, sizeof(Packet_CS_Move_Start));
+            SerializeBuffer serializeBuffer;
+            CreateMoveStartPacket(&serializeBuffer, m_iMoveDirection, m_iX, m_iY);
+            int enQRtn = g_SendRingBuffer.Enqueue(serializeBuffer.GetBufferPtr(), serializeBuffer.GetDataSize());
         }
         else if (m_PrevStatus == MOVE && m_iStatus == STAND)
                 //|| m_PrevStatus == ATTACK1 && m_iStatus == STAND
                 //|| m_PrevStatus == ATTACK2 && m_iStatus == STAND
                 //|| m_PrevStatus == ATTACK3 && m_iStatus == STAND)
         {
-            Packet_CS_Move_Stop tempMoveStop;
-            PacketHeader tempHeader;
-
-            tempHeader.code = 0x89;
-            tempHeader.size = sizeof(Packet_CS_Move_Stop);
-            tempHeader.type = dfPACKET_CS_MOVE_STOP;
-            int enQRtn = g_SendRingBuffer.Enqueue((char*)&tempHeader, sizeof(PacketHeader));
-
-            tempMoveStop.direction = m_iDirection;
-            tempMoveStop.x = m_iX;
-            tempMoveStop.y = m_iY;
-            enQRtn = g_SendRingBuffer.Enqueue((char*)&tempMoveStop, sizeof(Packet_CS_Move_Stop));
+            SerializeBuffer serializeBuffer;
+            CreateMoveStopPacket(&serializeBuffer, m_iDirection, m_iX, m_iY);
+            int enQRtn = g_SendRingBuffer.Enqueue(serializeBuffer.GetBufferPtr(), serializeBuffer.GetDataSize());
         }
 
    

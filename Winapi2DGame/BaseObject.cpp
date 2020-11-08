@@ -1,10 +1,10 @@
 #include <Windows.h>
 #include "BaseScene.h"
-#include "BaseObject.h"
 #include <iostream>
+#include "BaseObject.h"
 #include <Windows.h>
 #include "LogManager.h"
-IBaseObject::IBaseObject(int x, int y)
+IBaseObject::IBaseObject(int16_t x, int16_t y)
 	:
 	m_iX(x),
 	m_iY(y),
@@ -85,12 +85,12 @@ void IBaseObject::NextFrame()
 	}
 }
 
-__int32 IBaseObject::GetY()
+int16_t IBaseObject::GetY()
 {
 	return m_iY;
 }
 
-__int32 IBaseObject::GetX()
+int16_t IBaseObject::GetX()
 {
 	return m_iX;
 }

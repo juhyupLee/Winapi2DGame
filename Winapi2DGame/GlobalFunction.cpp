@@ -1,83 +1,104 @@
+#include <iostream>
+#include <Windows.h>
+#include <cassert>
+#include "SerializeBuffer.h"
 #include "GlobalFunction.h"
 #include <iostream>
 #include <Windows.h>
 #include "LogManager.h"
 #include "PacketDefine.h"
-#include "PacketStructure.h"
+//#include "PacketStructure.h"
 #include <iostream>
 #include <Windows.h>
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include "SpriteManager.h"
 #include "Player.h"
 #include <Windows.h>
 #include "MyLinkedList.h"
 #include "BaseScene.h"
+#include <iostream>
 #include "BaseObject.h"
 #include <unordered_map>
 #include "ObjectManager.h"
 #include "GlobalVariable.h"
 
+
+
 HANDLE g_Handle;
 
 void Marshalling()
 {
-	SINGLETON(CLogManager)->PrintConsoleLog(L"CPlayer:%d\n", sizeof(CPlayer));
 	char tempBuffer[1000];
+
+	char header[HEADER_SIZE];
+
+	BYTE code;
+	BYTE payloadSize;
+	BYTE type;
+
 	while (true)
 	{
-		if (g_RecvRingBuffer.GetUsedSize() < sizeof(PacketHeader))
+		if (g_RecvRingBuffer.GetUsedSize() < HEADER_SIZE)
 			break;
-		PacketHeader tempPacketHeader;
+	
+		int peekRtn = g_RecvRingBuffer.Peek((char*)&header, HEADER_SIZE);
 
-		int peekRtn = g_RecvRingBuffer.Peek((char*)&tempPacketHeader, sizeof(PacketHeader));
+		SerializeBuffer headerSerializeBuffer;
+		headerSerializeBuffer.PutData((char*)&header, HEADER_SIZE);
 
-		if (tempPacketHeader.code != CODE)
+		headerSerializeBuffer >> code >> payloadSize >> type;
+
+		if (code != CODE)
 		{
 			SINGLETON(CLogManager)->PrintConsoleLog(L"Packet Code Error!!", 0);
 			break;
 		}
-		if (g_RecvRingBuffer.GetUsedSize() < sizeof(PacketHeader) + tempPacketHeader.size)
+		if (g_RecvRingBuffer.GetUsedSize() < HEADER_SIZE + payloadSize)
 			break;
 
-		g_RecvRingBuffer.MoveFront(sizeof(PacketHeader));
+		g_RecvRingBuffer.MoveFront(HEADER_SIZE);
 
-		int deQRtn = g_RecvRingBuffer.Dequeue(tempBuffer, tempPacketHeader.size);
+		int deQRtn = g_RecvRingBuffer.Dequeue(tempBuffer, payloadSize);
 
-		if (deQRtn != tempPacketHeader.size)
+		if (deQRtn != payloadSize)
 		{
 			SINGLETON(CLogManager)->PrintConsoleLog(L"Dequeue Fail", 0);
 			break;
 		}
 
-		switch (tempPacketHeader.type)
+		SerializeBuffer payloadBuffer;
+		payloadBuffer.PutData(tempBuffer, payloadSize);
+
+		switch (type)
 		{
 		case dfPACKET_SC_CREATE_MY_CHARACTER:
-			CreateMyCharacter(tempBuffer);
+			CreateMyCharacter(&payloadBuffer);
 			break;
 		case dfPACKET_SC_CREATE_OTHER_CHARACTER:
-			CreateOtherCharacter(tempBuffer);
+			CreateOtherCharacter(&payloadBuffer);
 			break;
 		case dfPACKET_SC_DELETE_CHARACTER:
-			DeleteCharacter(tempBuffer);
+			DeleteCharacter(&payloadBuffer);
 			break;
 		case dfPACKET_SC_MOVE_START:
-			MoveStart(tempBuffer);
+			MoveStart(&payloadBuffer);
 			break;
 		case dfPACKET_SC_MOVE_STOP:
-			MoveStop(tempBuffer);
+			MoveStop(&payloadBuffer);
 			break;
 		case dfPACKET_SC_ATTACK1:
-			Attack1(tempBuffer);
+			Attack1(&payloadBuffer);
 			break;
 		case dfPACKET_SC_ATTACK2:
-			Attack2(tempBuffer);
+			Attack2(&payloadBuffer);
 			break;
 		case dfPACKET_SC_ATTACK3:
-			Attack3(tempBuffer);
+			Attack3(&payloadBuffer);
 			break;
 		case dfPACKET_SC_DAMAGE:
-			Damage(tempBuffer);
+			Damage(&payloadBuffer);
 			break;
 		}
 	}
@@ -103,91 +124,139 @@ void SendEvent()
         g_SendRingBuffer.MoveFront(sendRtn);
     }
 }
-void CreateMyCharacter(char* payload)
+void CreateMyCharacter(SerializeBuffer* payload)
 {
-	Packet_SC_MY_Character* packet = (Packet_SC_MY_Character*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] X:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] Y:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] HP:%d\n", packet->hp);
+	int32_t id;
+	BYTE direction;
+	int16_t x;
+	int16_t y;
+	BYTE hp;
 
-	g_pPlayer = new CPlayer(packet->id, packet->direction, packet->x, packet->y, packet->hp);
+	(*payload)>> id >> direction >> x >> y >> hp;
+
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] ID:%d\n", id);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] Direction:%d\n", direction);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] X:%d\n", x);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] Y:%d\n", y);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create My Character(SC)] HP:%d\n", hp);
+
+	g_pPlayer = new CPlayer(id, direction, x, y, hp);
 
 	SINGLETON(CObjectManager)->AddObject(g_pPlayer);
 }
 
-void CreateOtherCharacter(char* payload)
+void CreateOtherCharacter(SerializeBuffer* payload)
 {
-	Packet_SC_Other_Character* packet = (Packet_SC_Other_Character*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] X:%d\n", packet->x);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] Y:%d\n", packet->y);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] HP:%d\n", packet->hp);
+	int32_t id;
+	BYTE direction;
+	int16_t x;
+	int16_t y;
+	BYTE hp;
+
+	(*payload) >> id >> direction >> x >> y >> hp;
+
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] ID:%d\n", id);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] Direction:%d\n", direction);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] X:%d\n", x);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] Y:%d\n", y);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Create Other Character(SC)] HP:%d\n", hp);
 
 	CPlayer* otherPlayer;	
-	otherPlayer = new CPlayer(packet->id, packet->direction, packet->x, packet->y, packet->hp);
+	otherPlayer = new CPlayer(id, direction, x, y, hp);
 	SINGLETON(CObjectManager)->AddObject(otherPlayer);
 
 }
 
-void MoveStart(char* payload)
+void MoveStart(SerializeBuffer* payload)
 {
-	Packet_SC_Move_Start* packet = (Packet_SC_Move_Start*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] X:%d\n", packet->x);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] Y:%d\n", packet->y);
+	int32_t id;
+	BYTE direction;
+	int16_t x;
+	int16_t y;
 
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(packet->id, CPlayer::MOVE, packet->direction, packet->x, packet->y, true);
+	*payload >> id >> direction >> x >> y;
+
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] ID:%d\n", id);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] Direction:%d\n", direction);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] X:%d\n", x);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Start(SC)] Y:%d\n", y);
+
+	SINGLETON(CObjectManager)->OtherPlayerActionInput(id, CPlayer::MOVE, direction, x, y, true);
 }
 
-void MoveStop(char* payload)
+void MoveStop(SerializeBuffer* payload)
 {
-	Packet_SC_Move_Stop* packet = (Packet_SC_Move_Stop*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] ID:%d\n", packet->id);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] Direction:%d\n", packet->direction);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] X:%d\n", packet->x);
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] Y:%d\n", packet->y);
+	int32_t id;
+	BYTE direction;
+	int16_t x;
+	int16_t y;
 
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(packet->id, CPlayer::STAND, packet->direction, packet->x, packet->y, false);
+	*payload >> id >> direction >> x >> y;
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] ID:%d\n", id);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] Direction:%d\n", direction);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] X:%d\n", x);
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Move Stop(SC)] Y:%d\n", y);
+
+	SINGLETON(CObjectManager)->OtherPlayerActionInput(id, CPlayer::STAND, direction, x, y, false);
 
 }
 
-void Attack1(char* payload)
+void Attack1(SerializeBuffer* payload)
 {
-	Packet_SC_Attack1* packet = (Packet_SC_Attack1*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack1(SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", packet->id, packet->direction, packet->x, packet->y);
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(packet->id, CPlayer::ATTACK1, packet->direction, packet->x, packet->y, true);
+	int32_t id;
+	BYTE direction;
+	int16_t x;
+	int16_t y;
+
+	*payload >> id >> direction >> x >> y;
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack1(SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", id, direction, x, y);
+	SINGLETON(CObjectManager)->OtherPlayerActionInput(id, CPlayer::ATTACK1, direction, x, y, true);
 }
 
-void Attack2(char* payload)
+void Attack2(SerializeBuffer* payload)
 {
-	Packet_SC_Attack2* packet = (Packet_SC_Attack2*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack2 (SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", packet->id, packet->direction, packet->x, packet->y);
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(packet->id, CPlayer::ATTACK2, packet->direction, packet->x, packet->y, true);
+	int32_t id;
+	BYTE direction;
+	int16_t x;
+	int16_t y;
+
+	*payload >> id >> direction >> x >> y;
+
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack2 (SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", id, direction, x, y);
+	SINGLETON(CObjectManager)->OtherPlayerActionInput(id, CPlayer::ATTACK2, direction, x, y, true);
 }
 
-void Attack3(char* payload)
+void Attack3(SerializeBuffer* payload)
 {
-	Packet_SC_Attack3* packet = (Packet_SC_Attack3*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack3 (SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", packet->id, packet->direction, packet->x, packet->y);
-	SINGLETON(CObjectManager)->OtherPlayerActionInput(packet->id, CPlayer::ATTACK3, packet->direction, packet->x, packet->y, true);
+	int32_t id;
+	BYTE direction;
+	int16_t x;
+	int16_t y;
+
+	*payload >> id >> direction >> x >> y;
+
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Attack3 (SC)] ID:%d // Direction:%d // X:%d // Y:%d\n", id, direction, x, y);
+	SINGLETON(CObjectManager)->OtherPlayerActionInput(id, CPlayer::ATTACK3, direction, x, y, true);
 }
 
-void Damage(char* payload)
+void Damage(SerializeBuffer* payload)
 {
+	int32_t attackID;
+	int32_t damageID;
+	BYTE damageHP;
 
-	Packet_SC_Damage* packet = (Packet_SC_Damage*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Damage (SC)] Attack ID:%d // Damage ID:%d // Damage HP:%d\n", packet->attackID, packet->damageID, packet->damageHP, 0);
-	SINGLETON(CObjectManager)->AttackCheck(packet->attackID, packet->damageID, packet->damageHP);
+	*payload >> attackID >> damageID >> damageHP;
+
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Damage (SC)] Attack ID:%d // Damage ID:%d // Damage HP:%d\n", attackID, damageID, damageHP, 0);
+	SINGLETON(CObjectManager)->AttackCheck(attackID, damageID, damageHP);
 }
 
-void DeleteCharacter(char* payload)
+void DeleteCharacter(SerializeBuffer* payload)
 {
-	Packet_SC_Delete_Character* packet = (Packet_SC_Delete_Character*)payload;
-	SINGLETON(CLogManager)->PrintConsoleLog(L"[Delete (SC)]  ID:%d \n", packet->id);
-	SINGLETON(CLogManager)->PrintLog(L"[Delete (SC)]  ID", packet->id);
-	SINGLETON(CObjectManager)->DeletePlayer(packet->id);
+	int32_t id;
+	(*payload) >> id;
+
+	SINGLETON(CLogManager)->PrintConsoleLog(L"[Delete (SC)]  ID:%d \n", id);
+	SINGLETON(CLogManager)->PrintLog(L"[Delete (SC)]  ID", id);
+	SINGLETON(CObjectManager)->DeletePlayer(id);
 }

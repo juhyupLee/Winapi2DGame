@@ -12,7 +12,7 @@ public:
 		SHADOW,
 		EFFECT
 	};
-	IBaseObject(int x, int y);
+	IBaseObject(int16_t x, int16_t y);
 	IBaseObject();
 	virtual	~IBaseObject();
 	virtual	void Render() = 0;
@@ -27,12 +27,12 @@ public:
 	int GetSprite(void);
 	bool IsEndFrame();
 	void NextFrame();
-	__int32 GetY();
-	__int32 GetX();
+	int16_t GetY();
+	int16_t GetX();
 	//------------------------------------
 protected:
-	__int32		m_iX;
-	__int32		m_iY;
+	int16_t		m_iX;
+	int16_t		m_iY;
 	__int32		m_iSpriteStart;
 	__int32		m_iSpriteMax;
 	__int32		m_iFrameDelay;
